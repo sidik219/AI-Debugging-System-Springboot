@@ -1,5 +1,6 @@
 package com.llm.ai.project.debuggingAI.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -52,16 +53,15 @@ public class AIController {
             @RequestParam Integer Prabowo
     ) {
 
-        // kondisi tertentu → error
         if (Jokowi.equals("error")) {
             throw new RuntimeException("Error dari Jokowi");
         }
 
         if (Prabowo == 0) {
-            int hasil = 10 / Prabowo; // 💥 ArithmeticException
+            int hasil = 10 / Prabowo;
         }
 
-        int parsed = Integer.parseInt(Jokowi); // 💥 kalau bukan angka
+        int parsed = Integer.parseInt(Jokowi);
 
         return String.valueOf(parsed + Prabowo);
     }

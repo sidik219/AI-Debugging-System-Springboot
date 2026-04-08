@@ -96,3 +96,195 @@ public String PriaSolo(
 📊 KEYAKINAN: HIGH
 ========================================
 
+========================================
+📅 Tanggal  : 2026-04-08
+🕐 Waktu    : 19:35:57
+🤖 Provider : groq
+----------------------------------------
+❌ ERROR:
+   Tipe     : org.springframework.web.servlet.resource.NoResourceFoundException
+   Pesan    : No static resource swagger-ui/index.html.
+   Lokasi   : org.springframework.web.servlet.resource.ResourceHttpRequestHandler.handleRequest() baris 585
+----------------------------------------
+🔍 ANALISIS AI:
+Exception: org.springframework.web.servlet.resource.NoResourceFoundException
+----------------------------------------
+💡 SOLUSI:
+Periksa stack trace dan debug secara manual.
+----------------------------------------
+📝 KODE PERBAIKAN:
+-
+----------------------------------------
+📊 KEYAKINAN: LOW
+========================================
+
+========================================
+📅 Tanggal  : 2026-04-08
+🕐 Waktu    : 19:43:49
+🤖 Provider : groq
+----------------------------------------
+❌ ERROR:
+   Tipe     : java.lang.NullPointerException
+   Pesan    : Cannot invoke "String.toUpperCase()" because "nullString" is null
+   Lokasi   : com.llm.ai.project.debuggingAI.controller.AIController.testError() baris 20
+----------------------------------------
+🔍 ANALISIS AI:
+Penyebab error adalah karena variabel `nullString` memiliki nilai null, sehingga ketika memanggil metode `toUpperCase()` akan menghasilkan NullPointerException (NPE).
+----------------------------------------
+💡 SOLUSI:
+1. Periksa apakah variabel `nullString` memiliki nilai null sebelum memanggil metode `toUpperCase()`.
+2. Berikan nilai default atau alternatif jika `nullString` null.
+3. Pastikan bahwa `nullString` diinisialisasi dengan nilai yang valid sebelum digunakan.
+----------------------------------------
+📝 KODE PERBAIKAN:
+```java
+@GetMapping("/test-error")
+public String testError() {
+    String nullString = null;
+    if (nullString != null) {
+        return nullString.toUpperCase();
+    } else {
+        return "String null"; // atau nilai default lainnya
+    }
+}
+```
+Atau menggunakan Optional class:
+```java
+@GetMapping("/test-error")
+public String testError() {
+    String nullString = null;
+    return Optional.ofNullable(nullString)
+            .map(String::toUpperCase)
+            .orElse("String null"); // atau nilai default lainnya
+}
+```
+----------------------------------------
+📊 KEYAKINAN: HIGH
+========================================
+
+========================================
+📅 Tanggal  : 2026-04-08
+🕐 Waktu    : 19:44:32
+🤖 Provider : groq
+----------------------------------------
+❌ ERROR:
+   Tipe     : java.lang.ArithmeticException
+   Pesan    : / by zero
+   Lokasi   : com.llm.ai.project.debuggingAI.controller.AIController.testDivide() baris 25
+----------------------------------------
+🔍 ANALISIS AI:
+Penyebab error adalah karena terjadi pembagian oleh nol (division by zero) pada baris 25 di method `testDivide()` di kelas `AIController`. Ini menyebabkan `ArithmeticException` karena Java tidak dapat melakukan pembagian oleh nol.
+----------------------------------------
+💡 SOLUSI:
+1. Periksa nilai pembagi sebelum melakukan pembagian.
+2. Tambahkan pengecekan untuk memastikan bahwa pembagi tidak nol.
+3. Jika pembagi nol, maka lakukan tindakan yang sesuai, seperti mengembalikan pesan error atau nilai default.
+----------------------------------------
+📝 KODE PERBAIKAN:
+```java
+@GetMapping("/test-divide")
+public int testDivide() {
+    int pembilang = 10;
+    int pembagi = 0;
+    
+    if (pembagi == 0) {
+        throw new ArithmeticException("Pembagian oleh nol tidak diperbolehkan");
+    } else {
+        return pembilang / pembagi;
+    }
+}
+```
+----------------------------------------
+📊 KEYAKINAN: HIGH
+========================================
+
+========================================
+📅 Tanggal  : 2026-04-08
+🕐 Waktu    : 19:44:47
+🤖 Provider : groq
+----------------------------------------
+❌ ERROR:
+   Tipe     : java.lang.ArrayIndexOutOfBoundsException
+   Pesan    : Index 5 out of bounds for length 3
+   Lokasi   : com.llm.ai.project.debuggingAI.controller.AIController.testArray() baris 31
+----------------------------------------
+🔍 ANALISIS AI:
+Penyebab error ArrayIndexOutOfBoundsException adalah karena indeks array yang diakses (5) melebihi batas array yang didefinisikan (length 3). Ini terjadi karena array hanya memiliki 3 elemen (indeks 0, 1, dan 2), dan tidak ada elemen pada indeks 5.
+----------------------------------------
+💡 SOLUSI:
+1. Periksa batas array sebelum mengaksesnya.
+2. Pastikan indeks yang diakses tidak melebihi batas array.
+3. Gunakan metode untuk memeriksa ukuran array sebelum mengaksesnya.
+----------------------------------------
+📝 KODE PERBAIKAN:
+```java
+@GetMapping("/test-array")
+public int testArray() {
+    int[] numbers = {1, 2, 3};
+    int index = 5;
+    if (index < numbers.length) {
+        return numbers[index];
+    } else {
+        // Handle error atau return nilai default
+        return -1; // atau throw exception
+    }
+}
+```
+----------------------------------------
+📊 KEYAKINAN: HIGH
+========================================
+
+========================================
+📅 Tanggal  : 2026-04-08
+🕐 Waktu    : 19:46:15
+🤖 Provider : groq
+----------------------------------------
+❌ ERROR:
+   Tipe     : java.lang.NumberFormatException
+   Pesan    : For input string: "knjt"
+   Lokasi   : com.llm.ai.project.debuggingAI.controller.AIController.obj() baris 45
+----------------------------------------
+🔍 ANALISIS AI:
+Exception: java.lang.NumberFormatException
+----------------------------------------
+💡 SOLUSI:
+Periksa stack trace dan debug secara manual.
+----------------------------------------
+📝 KODE PERBAIKAN:
+-
+----------------------------------------
+📊 KEYAKINAN: LOW
+========================================
+
+========================================
+📅 Tanggal  : 2026-04-08
+🕐 Waktu    : 19:46:47
+🤖 Provider : groq
+----------------------------------------
+❌ ERROR:
+   Tipe     : java.lang.NumberFormatException
+   Pesan    : For input string: "Joko"
+   Lokasi   : com.llm.ai.project.debuggingAI.controller.AIController.PriaSolo() baris 65
+----------------------------------------
+🔍 ANALISIS AI:
+Penyebab error adalah karena variabel Jokowi berisi string "Joko" yang tidak dapat diparse menjadi integer, sehingga menyebabkan NumberFormatException.
+----------------------------------------
+💡 SOLUSI:
+1. Periksa jenis data variabel Jokowi sebelum melakukan parsing.
+2. Gunakan try-catch untuk menangani kemungkinan error parsing.
+3. Pastikan bahwa variabel Jokowi hanya berisi nilai numerik jika ingin diparse menjadi integer.
+----------------------------------------
+📝 KODE PERBAIKAN:
+```java
+try {
+    int parsed = Integer.parseInt(Jokowi);
+    return String.valueOf(parsed + Prabowo);
+} catch (NumberFormatException e) {
+    // Handle error parsing, misalnya dengan mengembalikan pesan error
+    return "Error: Jokowi harus berisi nilai numerik";
+}
+```
+----------------------------------------
+📊 KEYAKINAN: HIGH
+========================================
+
