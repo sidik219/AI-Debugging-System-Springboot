@@ -1,3 +1,6 @@
+HELP.md
+
+# Maven / Java
 target/
 pom.xml.tag
 pom.xml.releaseBackup
@@ -7,11 +10,38 @@ release.properties
 dependency-reduced-pom.xml
 buildNumber.properties
 .mvn/timing.properties
-# https://maven.apache.org/wrapper/#usage-without-binary-jar
 .mvn/wrapper/maven-wrapper.jar
 
-# Eclipse m2e generated files
-# Eclipse Core
+# Keep some target folders if needed
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+# Eclipse
 .project
-# JDT-specific (Eclipse Java Development Tools)
 .classpath
+
+# STS
+.apt_generated
+.factorypath
+.settings
+.springBeans
+.sts4-cache
+
+# IntelliJ IDEA
+.idea
+*.iws
+*.iml
+*.ipr
+
+# NetBeans
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+# VS Code
+.vscode/
