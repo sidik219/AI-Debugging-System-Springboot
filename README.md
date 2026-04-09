@@ -26,7 +26,7 @@
 | **Clipboard Auto-Copy** | Solusi otomatis tersalin ke clipboard |
 | **Colorful Console** | Output berwarna untuk memudahkan membaca |
 
-### 🟡 Level 2 - Medium Features
+### 🟡 Level 2 - Medium Features (Masih tahap Develop)
 | Fitur | Deskripsi |
 |-------|-----------|
 | **Memory Session** | AI mengingat percobaan fix sebelumnya, tidak ulangi solusi gagal |
