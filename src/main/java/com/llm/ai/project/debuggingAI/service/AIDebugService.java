@@ -1,5 +1,7 @@
 package com.llm.ai.project.debuggingAI.service;
 
+import com.llm.ai.core.common.UnitTestGenerator;
+import com.llm.ai.core.component.DebugSession;
 import com.llm.ai.project.debuggingAI.model.AIDebugResponse;
 import com.llm.ai.project.debuggingAI.model.ErrorContext;
 import com.llm.ai.project.debuggingAI.util.ConsoleColors;
@@ -19,11 +21,26 @@ public class AIDebugService {
     @Autowired(required = false)
     private GeminiService geminiService;
 
+    @Autowired
+    private DebugSession debugSession;
+
+    @Autowired
+    private NotificationService notificationService;
+
+    @Autowired
+    private UnitTestGenerator unitTestGenerator;
+
     @Value("${debug.ai.provider:groq}")
     private String provider;
 
     @Value("${debug.ai.enabled:true}")
     private boolean aiEnabled;
+
+    @Value("${debug.session.enabled:true}")
+    private boolean sessionEnabled;
+
+    @Value("${debug.autofix.enabled:false}")
+    private boolean autoFixEnabled;
 
     public AIDebugResponse analyzeError(ErrorContext errorContext) {
         if (!aiEnabled) {
@@ -31,7 +48,23 @@ public class AIDebugService {
             return ruleBasedAnalysis(errorContext);
         }
 
+        // Cek cached solution
+        if (sessionEnabled) {
+            String cached = debugSession.getCachedSolution(errorContext);
+            if (cached != null) {
+                System.out.println(ConsoleColors.GREEN + "✅ Menggunakan solusi tersimpan yang sudah terbukti berhasil!" + ConsoleColors.RESET);
+                AIDebugResponse cachedResponse = new AIDebugResponse();
+                cachedResponse.setAnalysis("(Solusi tersimpan)");
+                cachedResponse.setSuggestedFix(cached);
+                cachedResponse.setConfidence("HIGH");
+                return cachedResponse;
+            }
+        }
+
         System.out.println(ConsoleColors.CYAN + "🤖 Provider AI: " + provider.toUpperCase() + ConsoleColors.RESET);
+
+        int attemptCount = sessionEnabled ? debugSession.getAttemptCount(errorContext) + 1 : 1;
+        System.out.println(ConsoleColors.CYAN + "🔄 Attempt #" + attemptCount + ConsoleColors.RESET);
 
         try {
             String prompt = buildPrompt(errorContext);
@@ -39,15 +72,46 @@ public class AIDebugService {
 
             if (aiResponse != null && !aiResponse.isEmpty()) {
                 System.out.println(ConsoleColors.GREEN + "✅ Response dari " + provider + " diterima" + ConsoleColors.RESET);
-                return parseAIResponse(aiResponse, errorContext);
+                AIDebugResponse response = parseAIResponse(aiResponse, errorContext);
+
+                if (sessionEnabled) {
+                    debugSession.recordAttempt(errorContext, response);
+                }
+
+                return response;
             } else {
-                System.out.println(ConsoleColors.YELLOW + "⚠️ Tidak ada response dari " + provider + ", fallback ke rule-based" + ConsoleColors.RESET);
+                System.out.println(ConsoleColors.YELLOW + "⚠️ Tidak ada response, fallback ke rule-based" + ConsoleColors.RESET);
                 return ruleBasedAnalysis(errorContext);
             }
 
         } catch (Exception e) {
             System.err.println(ConsoleColors.RED + "❌ Error panggil AI: " + e.getMessage() + ConsoleColors.RESET);
             return ruleBasedAnalysis(errorContext);
+        }
+    }
+
+    public void markAsFixed(ErrorContext context, AIDebugResponse response) {
+        if (sessionEnabled) {
+            debugSession.recordSuccess(context, response);
+            notificationService.sendSuccessNotification(context, debugSession.getAttemptCount(context));
+        }
+    }
+
+    public String generateTest(ErrorContext context) {
+        return unitTestGenerator.generateUnitTest(context);
+    }
+
+    public String generateAllTests(String className) {
+        return unitTestGenerator.generateAllUnitTests(className);
+    }
+
+    public void sendNotification(ErrorContext context, AIDebugResponse response) {
+        notificationService.sendErrorNotification(context, response, provider);
+    }
+
+    public void clearSession(ErrorContext context) {
+        if (sessionEnabled) {
+            debugSession.clearSession(context);
         }
     }
 
@@ -65,29 +129,42 @@ public class AIDebugService {
 
     // TODO: Promt B Indo
     private String buildPrompt(ErrorContext errorContext) {
-        return String.format("""
-        Anda adalah asisten debugging Java Spring Boot. Jawab dalam BAHASA INDONESIA.
-        
-        ERROR: %s
-        PESAN: %s
-        LOKASI: %s.%s() baris %d
-        
-        KODE:
-        %s
-        
-        Berikan:
-        ANALISIS: (penyebab error, singkat)
-        PERBAIKAN: (langkah-langkah)
-        KODE: (contoh perbaikan)
-        KEYAKINAN: (HIGH/MEDIUM/LOW)
-        """,
+        StringBuilder prompt = new StringBuilder();
+        prompt.append("""
+            Anda adalah asisten debugging Java Spring Boot. Jawab dalam BAHASA INDONESIA.
+            
+            """);
+
+        if (sessionEnabled) {
+            String sessionContext = debugSession.getSessionContext(errorContext);
+            if (!sessionContext.isEmpty()) {
+                prompt.append(sessionContext);
+            }
+        }
+
+        prompt.append(String.format("""
+            ERROR: %s
+            PESAN: %s
+            LOKASI: %s.%s() baris %d
+            
+            KODE:
+            %s
+            
+            Berikan:
+            ANALISIS: (penyebab error, singkat)
+            PERBAIKAN: (langkah-langkah)
+            KODE: (contoh perbaikan - SATU LINE untuk auto-fix)
+            KEYAKINAN: (HIGH/MEDIUM/LOW)
+            """,
                 errorContext.getExceptionType(),
                 errorContext.getMessage(),
                 errorContext.getClassName(),
                 errorContext.getMethodName(),
                 errorContext.getLineNumber(),
                 errorContext.getSourceCode() != null ? errorContext.getSourceCode() : "Tidak tersedia"
-        );
+        ));
+
+        return prompt.toString();
     }
 
     // TODO: Promt B Inggris

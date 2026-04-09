@@ -2,10 +2,7 @@ package com.llm.ai.core.exception;
 
 import com.llm.ai.project.debuggingAI.model.AIDebugResponse;
 import com.llm.ai.project.debuggingAI.model.ErrorContext;
-import com.llm.ai.project.debuggingAI.service.AIDebugService;
-import com.llm.ai.project.debuggingAI.service.ClipboardService;
-import com.llm.ai.project.debuggingAI.service.ErrorExtractorService;
-import com.llm.ai.project.debuggingAI.service.ErrorHistoryService;
+import com.llm.ai.project.debuggingAI.service.*;
 import com.llm.ai.project.debuggingAI.util.ConsoleColors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,23 +26,42 @@ public class GlobalExceptionHandler {
     @Autowired
     private ClipboardService clipboardService;
 
+    @Autowired
+    private NotificationService notificationService;
+
     @Value("${debug.ai.provider:groq}")
     private String provider;
+
+    @Value("${debug.ai.notify:true}")
+    private boolean autoNotify;
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Object> handleAllExceptions(Exception ex) {
         System.out.println("\n" + ConsoleColors.RED_BG + "🚨 Exception tertangkap: " + ex.getClass().getSimpleName() + ConsoleColors.RESET);
 
+        // Extract error context
         ErrorContext context = errorExtractor.extractErrorContext(ex);
+
+        // Get AI analysis
         AIDebugResponse aiResponse = aiDebugService.analyzeError(context);
 
+        // Print debug info
         printDebugInfoToConsole(context, aiResponse);
 
-        // Simpan history
+        // Save history
         historyService.saveErrorHistory(context, aiResponse, provider);
 
-        // Copy solusi ke clipboard
+        // Copy to clipboard
         clipboardService.copySolutionToClipboard(aiResponse);
+
+        // Send notification
+        System.out.println(ConsoleColors.CYAN + "📢 autoNotify = " + autoNotify + ConsoleColors.RESET);
+        if (autoNotify) {
+            System.out.println(ConsoleColors.CYAN + "📢 Memanggil notificationService..." + ConsoleColors.RESET);
+            notificationService.sendErrorNotification(context, aiResponse, provider);
+        } else {
+            System.out.println(ConsoleColors.YELLOW + "🔕 Auto-notify dinonaktifkan (debug.auto.notify=false)" + ConsoleColors.RESET);
+        }
 
         return new ResponseEntity<>(
                 "Error occurred - Check console for AI debugging assistance",

@@ -1,6 +1,10 @@
 package com.llm.ai.project.debuggingAI.controller;
 
-import io.swagger.v3.oas.annotations.Operation;
+import com.llm.ai.core.common.UnitTestGenerator;
+import com.llm.ai.project.debuggingAI.model.ErrorContext;
+import com.llm.ai.project.debuggingAI.service.AIDebugService;
+import com.llm.ai.project.debuggingAI.service.ErrorExtractorService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -13,22 +17,28 @@ import java.util.Map;
 @RequestMapping("/api/debug")
 public class AIController {
 
-    // TODO: Default Test
+    @Autowired
+    private ErrorExtractorService errorExtractor;
+
+    @Autowired
+    private UnitTestGenerator unitTestGenerator;
+
+    // TODO: ==================== Default Test ====================
     @GetMapping("/test-error")
     public String testError() {
         String nullString = null;
-        return nullString.toUpperCase(); // Ini akan trigger NPE
+        return nullString.toUpperCase();
     }
 
     @GetMapping("/test-divide")
     public int testDivide() {
-        return 10 / 0; // Ini akan trigger ArithmeticException
+        return 10 / 0;
     }
 
     @GetMapping("/test-array")
     public int testArray() {
         int[] numbers = {1, 2, 3};
-        return numbers[5]; // Ini akan trigger ArrayIndexOutOfBoundsException
+        return numbers[5];
     }
 
     @GetMapping("/test-success")
@@ -36,7 +46,49 @@ public class AIController {
         return "Hello World!";
     }
 
-    // TODO: Test Ngawur
+    // TODO: ==================== Unit Test Generator ====================
+    // Generate satu method dalam satu class
+    @GetMapping("/generate-test")
+    public String generateTest() {
+        try {
+            throw new ArithmeticException("Test division by zero");
+        } catch (Exception e) {
+            ErrorContext context = errorExtractor.extractErrorContext(e);
+            return unitTestGenerator.generateUnitTest(context);
+        }
+    }
+
+    // Generate semua method dalam class controller
+    @GetMapping("/generate-controller-tests")
+    public String generateAllTests() {
+        String controllerClassName = "com.llm.ai.project.debuggingAI.controller.AIController";
+        return unitTestGenerator.generateAllUnitTests(controllerClassName);
+    }
+
+    // Generate semua method dalam class service
+    @GetMapping("/generate-service-tests")
+    public String generateServiceTest() {
+        String serviceClassName = "com.llm.ai.project.debuggingAI.service.AIDebugService";
+        return unitTestGenerator.generateAllUnitTests(serviceClassName);
+    }
+
+    // Generate semua method dalam class repository
+    @GetMapping("/generate-repository-tests")
+    public String generateRepositoryTests(@RequestParam(required = false) String className) {
+        if (className == null || className.isEmpty()) {
+            className = "com.llm.ai.project.debuggingAI.repository.DebugRepository";
+        }
+        return unitTestGenerator.generateAllUnitTests(className);
+    }
+
+    // Generate semua method dalam class model
+    @GetMapping("/generate-model-tests")
+    public String generateModelTest() {
+        String modelClassName = "com.llm.ai.project.debuggingAI.model.ErrorContext";
+        return unitTestGenerator.generateAllUnitTests(modelClassName);
+    }
+
+    // TODO: ==================== Ngawur Test ====================
     @GetMapping("/kontol")
     public String obj(String key) {
         Map<Integer, String> mmk = new HashMap<>();
@@ -45,24 +97,5 @@ public class AIController {
         Integer kenjut = Integer.parseInt(key);
 
         return mmk.get(kenjut);
-    }
-
-    @GetMapping("/Presidensial")
-    public String PriaSolo(
-            @RequestParam String Jokowi,
-            @RequestParam Integer Prabowo
-    ) {
-
-        if (Jokowi.equals("error")) {
-            throw new RuntimeException("Error dari Jokowi");
-        }
-
-        if (Prabowo == 0) {
-            int hasil = 10 / Prabowo;
-        }
-
-        int parsed = Integer.parseInt(Jokowi);
-
-        return String.valueOf(parsed + Prabowo);
     }
 }
