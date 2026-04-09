@@ -1,4 +1,4 @@
-<img width="142" height="21" alt="image" src="https://github.com/user-attachments/assets/992c759e-d93f-4332-a0e1-6f687a115d0a" /># 🤖 AI Debugging System (Project Iseng :v)
+# 🤖 AI Debugging System (Project Iseng :v)
 
 [![Java](https://img.shields.io/badge/Java-17-orange.svg)](https://www.oracle.com/java/)
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.4.4-brightgreen.svg)](https://spring.io/projects/spring-boot)
