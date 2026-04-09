@@ -55,7 +55,6 @@ public class ErrorExtractorService {
                 }
             }
 
-            System.out.println("   ⚠️ No 'com.llm.ai' found, using first stack trace element");
             StackTraceElement firstElement = stackTrace[0];
             context.setClassName(firstElement.getClassName());
             context.setMethodName(firstElement.getMethodName());
@@ -107,7 +106,6 @@ public class ErrorExtractorService {
             }
 
             System.out.println("   ⚠️ Source file not found for: " + className);
-
         } catch (IOException e) {
             System.out.println("   ❌ Error reading source: " + e.getMessage());
         }

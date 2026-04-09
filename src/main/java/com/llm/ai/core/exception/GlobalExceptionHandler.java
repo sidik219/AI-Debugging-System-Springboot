@@ -37,8 +37,6 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Object> handleAllExceptions(Exception ex) {
-        System.out.println("\n" + ConsoleColors.RED_BG + "🚨 Exception tertangkap: " + ex.getClass().getSimpleName() + ConsoleColors.RESET);
-
         // Extract error context
         ErrorContext context = errorExtractor.extractErrorContext(ex);
 
@@ -55,12 +53,8 @@ public class GlobalExceptionHandler {
         clipboardService.copySolutionToClipboard(aiResponse);
 
         // Send notification
-        System.out.println(ConsoleColors.CYAN + "📢 autoNotify = " + autoNotify + ConsoleColors.RESET);
         if (autoNotify) {
-            System.out.println(ConsoleColors.CYAN + "📢 Memanggil notificationService..." + ConsoleColors.RESET);
             notificationService.sendErrorNotification(context, aiResponse, provider);
-        } else {
-            System.out.println(ConsoleColors.YELLOW + "🔕 Auto-notify dinonaktifkan (debug.auto.notify=false)" + ConsoleColors.RESET);
         }
 
         return new ResponseEntity<>(
@@ -70,43 +64,63 @@ public class GlobalExceptionHandler {
     }
 
     private void printDebugInfoToConsole(ErrorContext context, AIDebugResponse aiResponse) {
-        System.out.println("\n" + ConsoleColors.CYAN_BOLD + "=".repeat(80) + ConsoleColors.RESET);
-        System.out.println(ConsoleColors.PURPLE_BOLD + "🔍 ASISTEN DEBUG AI - ANALISIS ERROR" + ConsoleColors.RESET);
-        System.out.println(ConsoleColors.CYAN_BOLD + "=".repeat(80) + ConsoleColors.RESET);
+        System.out.println("\n" + ConsoleColors.RED_BOLD + "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" + ConsoleColors.RESET);
+        System.out.println(ConsoleColors.RED_BOLD + "🚨 " + context.getExceptionType().substring(context.getExceptionType().lastIndexOf('.') + 1) +
+                ConsoleColors.RESET + " di " + ConsoleColors.YELLOW + context.getMethodName() + "()" + ConsoleColors.RESET);
+        System.out.println(ConsoleColors.RED_BOLD + "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" + ConsoleColors.RESET);
 
-        System.out.println("\n" + ConsoleColors.RED_BOLD + "❌ ERROR TERDETEKSI:" + ConsoleColors.RESET);
-        System.out.printf("   " + ConsoleColors.RED + "Tipe: %s" + ConsoleColors.RESET + "%n", context.getExceptionType());
-        System.out.printf("   " + ConsoleColors.YELLOW + "Pesan: %s" + ConsoleColors.RESET + "%n", context.getMessage());
-        System.out.printf("   " + ConsoleColors.BLUE + "Lokasi: %s.%s() pada baris %d" + ConsoleColors.RESET + "%n",
-                context.getClassName(), context.getMethodName(), context.getLineNumber());
+        // Error Info (ringkas)
+        System.out.println(ConsoleColors.YELLOW + "📌 " + context.getMessage() + ConsoleColors.RESET);
+        System.out.println(ConsoleColors.BLUE + "📍 " + context.getClassName() + "." + context.getMethodName() + "() : line " + context.getLineNumber() + ConsoleColors.RESET);
 
-        System.out.println("\n" + ConsoleColors.GREEN_BOLD + "📄 KONTEKS KODE SUMBER:" + ConsoleColors.RESET);
-        System.out.println(ConsoleColors.GREEN + "-".repeat(40) + ConsoleColors.RESET);
-        System.out.println(context.getSourceCode());
+        // Source Code (hanya baris error + 2 baris konteks)
+        System.out.println("\n" + ConsoleColors.CYAN + "📝 Kode:" + ConsoleColors.RESET);
+        printMinimalSourceCode(context);
 
-        System.out.println("\n" + ConsoleColors.PURPLE_BOLD + "🤖 ANALISIS AI (" + provider.toUpperCase() + "):" + ConsoleColors.RESET);
-        System.out.println(ConsoleColors.PURPLE + "-".repeat(40) + ConsoleColors.RESET);
-        System.out.println(aiResponse.getAnalysis());
+        // AI Analysis (ringkas)
+        System.out.println("\n" + ConsoleColors.PURPLE + "🤖 AI (" + provider.toUpperCase() + "):" + ConsoleColors.RESET);
+        System.out.println("   " + aiResponse.getAnalysis().replace("\n", "\n   "));
 
-        System.out.println("\n" + ConsoleColors.YELLOW_BOLD + "💡 SARAN PERBAIKAN:" + ConsoleColors.RESET);
-        System.out.println(ConsoleColors.YELLOW + "-".repeat(40) + ConsoleColors.RESET);
-        System.out.println(aiResponse.getSuggestedFix());
+        // Suggested Fix
+        System.out.println("\n" + ConsoleColors.GREEN + "💡 Perbaikan:" + ConsoleColors.RESET);
+        System.out.println("   " + aiResponse.getSuggestedFix().replace("\n", "\n   "));
 
+        // Code Example (jika ada)
         if (aiResponse.getCodeExample() != null && !aiResponse.getCodeExample().isEmpty()) {
-            System.out.println("\n" + ConsoleColors.CYAN_BOLD + "📝 CONTOH KODE:" + ConsoleColors.RESET);
-            System.out.println(ConsoleColors.CYAN + "-".repeat(40) + ConsoleColors.RESET);
-            System.out.println(aiResponse.getCodeExample());
+            System.out.println("\n" + ConsoleColors.CYAN + "📋 Contoh:" + ConsoleColors.RESET);
+            System.out.println("   " + aiResponse.getCodeExample().replace("\n", "\n   "));
         }
 
-        String confidenceIcon = switch(aiResponse.getConfidence()) {
-            case "HIGH" -> ConsoleColors.GREEN + "🟢 TINGGI" + ConsoleColors.RESET;
-            case "MEDIUM" -> ConsoleColors.YELLOW + "🟡 SEDANG" + ConsoleColors.RESET;
-            default -> ConsoleColors.RED + "🔴 RENDAH" + ConsoleColors.RESET;
-        };
-        System.out.printf("%n📊 TINGKAT KEYAKINAN: %s%n", confidenceIcon);
+        // Confidence
+        String confidence = aiResponse.getConfidence();
+        String confidenceIcon = confidence.equals("HIGH") ? "🟢" : (confidence.equals("MEDIUM") ? "🟡" : "🔴");
+        System.out.println("\n" + confidenceIcon + " Keyakinan: " + confidence);
 
-        System.out.println("\n" + ConsoleColors.CYAN_BOLD + "=".repeat(80) + ConsoleColors.RESET);
-        System.out.println(ConsoleColors.GREEN_BOLD + "💪 Coba saran perbaikan dan jalankan ulang!" + ConsoleColors.RESET);
-        System.out.println(ConsoleColors.CYAN_BOLD + "=".repeat(80) + ConsoleColors.RESET + "\n");
+        System.out.println(ConsoleColors.RED_BOLD + "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" + ConsoleColors.RESET);
+    }
+
+    private void printMinimalSourceCode(ErrorContext context) {
+        String sourceCode = context.getSourceCode();
+        if (sourceCode == null || sourceCode.isEmpty()) return;
+
+        String[] lines = sourceCode.split("\n");
+        int errorLine = context.getLineNumber();
+
+        // Cari baris yang ada marker 👉
+        for (int i = 0; i < lines.length; i++) {
+            if (lines[i].contains("👉")) {
+                // Print 1 baris sebelum (jika ada)
+                if (i > 0) {
+                    System.out.println("   " + lines[i-1]);
+                }
+                // Print baris error
+                System.out.println(ConsoleColors.RED + "   " + lines[i] + ConsoleColors.RESET);
+                // Print 1 baris setelah (jika ada)
+                if (i < lines.length - 1) {
+                    System.out.println("   " + lines[i+1]);
+                }
+                break;
+            }
+        }
     }
 }

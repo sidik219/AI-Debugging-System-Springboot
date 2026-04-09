@@ -431,7 +431,7 @@ public class UnitTestGenerator {
         return fields;
     }
 
-    // ==================== REPOSITORY TEST (Akurasi 50%) ====================
+    // ==================== REPOSITORY TEST (Akurasi 10%) ====================
 
     private String generateRepositoryTest(Class<?> clazz, String packageName, String className) {
         String entityClassName = extractEntityClassName(clazz);

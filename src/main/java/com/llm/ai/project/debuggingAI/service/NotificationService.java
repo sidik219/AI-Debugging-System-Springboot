@@ -34,9 +34,7 @@ public class NotificationService {
     }
 
     public void sendErrorNotification(ErrorContext context, AIDebugResponse response, String provider) {
-        System.out.println("📢 sendErrorNotification DIPANGGIL!");
-        System.out.println("   notification.enabled = " + notificationEnabled);
-        System.out.println("   discord.webhook.url = " + (discordWebhook != null && !discordWebhook.isEmpty() ? discordWebhook.substring(0, 50) + "..." : "KOSONG"));
+        System.out.println("📢 Notification DIPANGGIL!");
 
         if (!notificationEnabled) {
             System.out.println(ConsoleColors.YELLOW + "🔕 Notifikasi dinonaktifkan" + ConsoleColors.RESET);

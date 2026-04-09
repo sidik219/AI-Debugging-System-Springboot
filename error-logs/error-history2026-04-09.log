@@ -580,3 +580,100 @@ return Optional.ofNullable(nullString).orElse("").toUpperCase();
 📊 KEYAKINAN: HIGH
 ========================================
 
+========================================
+📅 Tanggal  : 2026-04-09
+🕐 Waktu    : 18:42:17
+🤖 Provider : groq
+----------------------------------------
+❌ ERROR:
+   Tipe     : java.lang.NullPointerException
+   Pesan    : Cannot invoke "String.toUpperCase()" because "nullString" is null
+   Lokasi   : com.llm.ai.project.debuggingAI.controller.AIController.testError() baris 30
+----------------------------------------
+🔍 ANALISIS AI:
+Error NullPointerException terjadi karena variabel nullString memiliki nilai null dan tidak dapat dipanggil method toUpperCase().
+----------------------------------------
+💡 SOLUSI:
+1. Periksa apakah variabel nullString memiliki nilai null sebelum memanggil method toUpperCase().
+2. Berikan nilai default atau nilai kosong pada variabel nullString jika memungkinkan.
+----------------------------------------
+📝 KODE PERBAIKAN:
+return nullString != null ? nullString.toUpperCase() : "";
+----------------------------------------
+📊 KEYAKINAN: HIGH
+========================================
+
+========================================
+📅 Tanggal  : 2026-04-09
+🕐 Waktu    : 18:45:11
+🤖 Provider : groq
+----------------------------------------
+❌ ERROR:
+   Tipe     : java.lang.NullPointerException
+   Pesan    : Cannot invoke "String.toUpperCase()" because "nullString" is null
+   Lokasi   : com.llm.ai.project.debuggingAI.controller.AIController.testError() baris 30
+----------------------------------------
+🔍 ANALISIS AI:
+Error NullPointerException terjadi karena variabel `nullString` memiliki nilai null dan tidak dapat dipanggil method `toUpperCase()`.
+----------------------------------------
+💡 SOLUSI:
+1. Periksa apakah variabel `nullString` memiliki nilai null sebelum memanggil method `toUpperCase()`.
+2. Berikan nilai default atau nilai kosong string jika `nullString` null.
+----------------------------------------
+📝 KODE PERBAIKAN:
+```java
+return nullString != null ? nullString.toUpperCase() : "";
+```
+----------------------------------------
+📊 KEYAKINAN: HIGH
+========================================
+
+========================================
+📅 Tanggal  : 2026-04-09
+🕐 Waktu    : 18:49:43
+🤖 Provider : groq
+----------------------------------------
+❌ ERROR:
+   Tipe     : java.lang.NullPointerException
+   Pesan    : Cannot invoke "String.toUpperCase()" because "nullString" is null
+   Lokasi   : com.llm.ai.project.debuggingAI.controller.AIController.testError() baris 30
+----------------------------------------
+🔍 ANALISIS AI:
+Error NullPointerException terjadi karena variabel nullString memiliki nilai null dan tidak dapat dipanggil method toUpperCase().
+----------------------------------------
+💡 SOLUSI:
+1. Periksa apakah variabel nullString memiliki nilai null sebelum memanggil method toUpperCase().
+2. Berikan nilai default atau nilai kosong jika nullString null.
+----------------------------------------
+📝 KODE PERBAIKAN:
+return nullString != null ? nullString.toUpperCase() : "";
+----------------------------------------
+📊 KEYAKINAN: HIGH
+========================================
+
+========================================
+📅 Tanggal  : 2026-04-09
+🕐 Waktu    : 18:50:57
+🤖 Provider : groq
+----------------------------------------
+❌ ERROR:
+   Tipe     : java.lang.NumberFormatException
+   Pesan    : For input string: "KANJUT HIDEUNG"
+   Lokasi   : com.llm.ai.project.debuggingAI.controller.AIController.obj() baris 97
+----------------------------------------
+🔍 ANALISIS AI:
+Error NumberFormatException terjadi karena input string "KANJUT HIDEUNG" tidak dapat di-parse menjadi integer.
+----------------------------------------
+💡 SOLUSI:
+1. Periksa input string sebelum melakukan parsing.
+2. Gunakan try-catch untuk menangani exception.
+3. Pastikan input string hanya berisi karakter numerik.
+----------------------------------------
+📝 KODE PERBAIKAN:
+```java
+Integer kenjut = key.matches("\\d+") ? Integer.parseInt(key) : null;
+```
+----------------------------------------
+📊 KEYAKINAN: HIGH
+========================================
+
