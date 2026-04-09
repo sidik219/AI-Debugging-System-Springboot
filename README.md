@@ -51,7 +51,7 @@
 
 ### 1. Clone Repository
 ```bash
-git clone https://github.com/yourusername/ai-debugging-system.git
+git clone https://github.com/sidik219/ai-debugging-system.git
 cd ai-debugging-system
 ```
 
