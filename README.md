@@ -58,7 +58,7 @@ cd ai-debugging-system
 ---
 
 ## 📄 Set Environment Variable
-# Windows (Command Prompt)
+Windows (Command Prompt)
 - set GROQ_API_KEY=gsk_your_api_key_here
 
 Atau di IntelliJ IDEA:
@@ -66,7 +66,7 @@ Atau di IntelliJ IDEA:
 - GROQ_API_KEY=gsk_your_api_key_here
 
 ## ⭐ Test Endpoint
-# Bisa dengan membuka swagger:
+Bisa dengan membuka swagger:
 - http://localhost:8080/swagger-ui/index.html#/
   
 Atau Curl:
@@ -87,7 +87,7 @@ Atau Curl:
 | **Utilities** | Lombok, Jackson, Java Reflection |
 
 ## 🤝 Kontribusi
-# Kontribusi selalu diterima! Silakan:
+Kontribusi selalu diterima! Silakan:
 
     Fork repository
 
