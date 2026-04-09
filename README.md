@@ -31,7 +31,7 @@
 |-------|-----------|--------|---------|
 | **Memory Session** | AI mengingat percobaan fix sebelumnya, tidak ulangi solusi gagal | ✅ | Sudah di test aman |
 | **Discord/Slack Notification** | Notifikasi real-time ke channel team | ✅ | Sudah di test aman |
-| **Unit Test Generator** | Generate JUnit test otomatis untuk method yang error (Masih tahap Develop) | ⏳ | Aman tapi perlu di test kembali |
+| **Unit Test Generator** | Generate JUnit test otomatis untuk method yang error (Masih tahap Develop 68.5%) | ⏳ | Aman tapi perlu di test kembali |
 
 ### 🔮 Level 3 - Advanced (Coming Soon)
 - Web Dashboard monitoring
