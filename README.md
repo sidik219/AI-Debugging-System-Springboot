@@ -100,8 +100,8 @@ Atau Curl:
     Buka Pull Request
 
 ## 📝 Lisensi
-# Distributed under the MIT License. See LICENSE for more information.
+Distributed under the MIT License. See LICENSE for more information.
 
 ## ⭐ Support
-# Jika project ini bermanfaat, berikan ⭐ di GitHub!
-# Made with ❤️ by Sidik
+Jika project ini bermanfaat, berikan ⭐ di GitHub!
+Made with ❤️ by Sidik
