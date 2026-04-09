@@ -75,15 +75,16 @@ Atau Curl:
 - curl http://localhost:8080/api/debug/test-array
 
 ## 🛠️ Tech Stack
-- Kategori                Teknologi
-- Language                Java 17
-- Framework               Spring Boot 3.4.4
-- AI                      Groq (Llama 3.3), OpenAI, Gemini
-- HTTP Client             WebClient (Spring WebFlux)
-- Testing                 JUnit 5, Mockito, MockMvc
-- Notification            Discord/Slack Webhook
-- Build Tool              Maven
-- Utilities               Lombok, Jackson, Java Reflection
+| Kategori | Teknologi |
+|-------|-----------|
+| **Language** | Java 17 |
+| **Framework** | Spring Boot 3.4.4 |
+| **AI** | Groq (Llama 3.3), OpenAI, Gemini |
+| **HTTP Client** | WebClient (Spring WebFlux) |
+| **Testing** | JUnit 5, Mockito, MockMvc |
+| **Notification** | Discord/Slack Webhook |
+| **Build Tool** | Maven |
+| **Utilities** | Lombok, Jackson, Java Reflection |
 
 ## 🤝 Kontribusi
 # Kontribusi selalu diterima! Silakan:
