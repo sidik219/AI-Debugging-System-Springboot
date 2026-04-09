@@ -26,12 +26,12 @@
 | **Clipboard Auto-Copy** | Solusi otomatis tersalin ke clipboard |
 | **Colorful Console** | Output berwarna untuk memudahkan membaca |
 
-### 🟡 Level 2 - Medium Features (Masih tahap Develop)
+### 🟡 Level 2 - Medium Features
 | Fitur | Deskripsi |
 |-------|-----------|
 | **Memory Session** | AI mengingat percobaan fix sebelumnya, tidak ulangi solusi gagal |
 | **Discord/Slack Notification** | Notifikasi real-time ke channel team |
-| **Unit Test Generator** | Generate JUnit test otomatis untuk method yang error |
+| **Unit Test Generator** | Generate JUnit test otomatis untuk method yang error (Masih tahap Develop) |
 
 ### 🔮 Level 3 - Advanced (Coming Soon)
 - Web Dashboard monitoring
