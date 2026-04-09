@@ -32,7 +32,6 @@
 | **Memory Session** | AI mengingat percobaan fix sebelumnya, tidak ulangi solusi gagal |
 | **Discord/Slack Notification** | Notifikasi real-time ke channel team |
 | **Unit Test Generator** | Generate JUnit test otomatis untuk method yang error |
-| **Auto-Fix** | One-click apply fix dengan backup otomatis |
 
 ### 🔮 Level 3 - Advanced (Coming Soon)
 - Web Dashboard monitoring
