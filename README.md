@@ -1,4 +1,4 @@
-# 🤖 AI Debugging System (Project Iseng :v)
+<img width="142" height="21" alt="image" src="https://github.com/user-attachments/assets/992c759e-d93f-4332-a0e1-6f687a115d0a" /># 🤖 AI Debugging System (Project Iseng :v)
 
 [![Java](https://img.shields.io/badge/Java-17-orange.svg)](https://www.oracle.com/java/)
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.4.4-brightgreen.svg)](https://spring.io/projects/spring-boot)
@@ -11,27 +11,27 @@
 ## ✨ Fitur Utama
 
 ### 🔥 Level 0 - Base Features
-| Fitur | Deskripsi |
-|-------|-----------|
-| **Auto Error Detection** | Otomatis menangkap semua exception di aplikasi |
-| **Source Code Extraction** | Menampilkan kode sumber dengan marker 👉 di baris error |
-| **AI-Powered Analysis** | Analisis error menggunakan AI (Groq/OpenAI/Gemini) |
-| **Bahasa Indonesia** | Output analisis dalam Bahasa Indonesia |
+| Fitur | Deskripsi | Status | Catatan |
+|-------|-----------|--------|---------|
+| **Auto Error Detection** | Otomatis menangkap semua exception di aplikasi | ✅ | Sudah di test aman |
+| **Source Code Extraction** | Menampilkan kode sumber dengan marker 👉 di baris error | ✅ | Sudah di test aman |
+| **AI-Powered Analysis** | Analisis error menggunakan AI (Groq/OpenAI/Gemini) | ✅ | Sudah di test aman |
+| **Bahasa Indonesia** | Output analisis dalam Bahasa Indonesia | ✅ | Sudah di test aman |
 
 ### 🟢 Level 1 - Easy Features
-| Fitur | Deskripsi |
-|-------|-----------|
-| **Multi-Provider AI** | Dukungan Groq (gratis), OpenAI, dan Gemini |
-| **Error History** | Menyimpan log error ke file untuk referensi |
-| **Clipboard Auto-Copy** | Solusi otomatis tersalin ke clipboard |
-| **Colorful Console** | Output berwarna untuk memudahkan membaca |
+| Fitur | Deskripsi | Status | Catatan |
+|-------|-----------|--------|---------|
+| **Multi-Provider AI** | Dukungan Groq (gratis), OpenAI, dan Gemini | ✅ | Sudah di test aman |
+| **Error History** | Menyimpan log error ke file untuk referensi | ✅ | Sudah di test aman |
+| **Clipboard Auto-Copy** | Solusi otomatis tersalin ke clipboard | ✅ | Sudah di test aman |
+| **Colorful Console** | Output berwarna untuk memudahkan membaca | ✅ | Sudah di test aman |
 
 ### 🟡 Level 2 - Medium Features
-| Fitur | Deskripsi |
-|-------|-----------|
-| **Memory Session** | AI mengingat percobaan fix sebelumnya, tidak ulangi solusi gagal |
-| **Discord/Slack Notification** | Notifikasi real-time ke channel team |
-| **Unit Test Generator** | Generate JUnit test otomatis untuk method yang error (Masih tahap Develop) |
+| Fitur | Deskripsi | Status | Catatan |
+|-------|-----------|--------|---------|
+| **Memory Session** | AI mengingat percobaan fix sebelumnya, tidak ulangi solusi gagal | ✅ | Sudah di test aman |
+| **Discord/Slack Notification** | Notifikasi real-time ke channel team | ✅ | Sudah di test aman |
+| **Unit Test Generator** | Generate JUnit test otomatis untuk method yang error (Masih tahap Develop) | ⏳ | Aman tapi perlu di test kembali |
 
 ### 🔮 Level 3 - Advanced (Coming Soon)
 - Web Dashboard monitoring
