@@ -2,7 +2,6 @@ package com.llm.ai.project.debuggingAI.controller;
 
 import com.llm.ai.core.common.UnitTestGenerator;
 import com.llm.ai.project.debuggingAI.model.ErrorContext;
-import com.llm.ai.project.debuggingAI.service.AIDebugService;
 import com.llm.ai.project.debuggingAI.service.ErrorExtractorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;

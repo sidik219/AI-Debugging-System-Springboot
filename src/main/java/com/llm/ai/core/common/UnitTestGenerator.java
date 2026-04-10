@@ -28,7 +28,7 @@ public class UnitTestGenerator {
         CONTROLLER, SERVICE, MODEL, REPOSITORY, UNKNOWN
     }
 
-    // ==================== PUBLIC API ====================
+    // TODO: ==================== PUBLIC API ====================
 
     public String generateUnitTest(ErrorContext context) {
         String className = context.getClassName();
@@ -56,7 +56,7 @@ public class UnitTestGenerator {
         }
     }
 
-    // ==================== CLASS TYPE DETECTION ====================
+    // TODO: ==================== CLASS TYPE DETECTION ====================
 
     private ClassType detectClassType(Class<?> clazz) {
         if (clazz.isAnnotationPresent(RestController.class) ||
@@ -86,10 +86,9 @@ public class UnitTestGenerator {
         return false;
     }
 
-    // ==================== GENERATE BY TYPE ====================
+    // TODO: ==================== GENERATE BY TYPE ====================
 
-    private String generateTestByType(Class<?> clazz, String packageName,
-                                      String className, ClassType classType) {
+    private String generateTestByType(Class<?> clazz, String packageName, String className, ClassType classType) {
         return switch (classType) {
             case CONTROLLER -> generateControllerTest(clazz, packageName, className);
             case SERVICE -> generateServiceTest(clazz, packageName, className);
@@ -99,7 +98,7 @@ public class UnitTestGenerator {
         };
     }
 
-    // ==================== CONTROLLER TEST (Akurasi 95%) ====================
+    // TODO: ==================== CONTROLLER TEST (Akurasi 95%) ====================
 
     private String generateControllerTest(Class<?> clazz, String packageName, String className) {
         String basePath = extractBasePath(clazz);
@@ -184,7 +183,7 @@ public class UnitTestGenerator {
         return endpoints;
     }
 
-    // ==================== SERVICE TEST (Akurasi 70%) ====================
+    // TODO: ==================== SERVICE TEST (Akurasi 70%) ====================
 
     private String generateServiceTest(Class<?> clazz, String packageName, String className) {
         List<Method> publicMethods = getPublicMethods(clazz);
@@ -431,7 +430,7 @@ public class UnitTestGenerator {
         return fields;
     }
 
-    // ==================== REPOSITORY TEST (Akurasi 10%) ====================
+    // TODO: ==================== REPOSITORY TEST (Akurasi 10%) ====================
 
     private String generateRepositoryTest(Class<?> clazz, String packageName, String className) {
         String entityClassName = extractEntityClassName(clazz);
@@ -555,7 +554,7 @@ public class UnitTestGenerator {
         return sb.toString();
     }
 
-    // ==================== MODEL TEST (Akurasi 99%) ====================
+    // TODO: ==================== MODEL TEST (Akurasi 99%) ====================
 
     private String generateModelTest(Class<?> clazz, String packageName, String className) {
         List<String> fields = extractFieldNames(clazz);
@@ -661,7 +660,7 @@ public class UnitTestGenerator {
         };
     }
 
-    // ==================== GENERIC TEST ====================
+    // TODO: ==================== GENERIC TEST ====================
 
     private String generateGenericTest(String packageName, String className) {
         return String.format("""
@@ -680,7 +679,7 @@ public class UnitTestGenerator {
             """, packageName, className);
     }
 
-    // ==================== HELPER METHODS ====================
+    // TODO: ==================== HELPER METHODS ====================
 
     private String capitalize(String str) {
         if (str == null || str.isEmpty()) return str;
@@ -706,7 +705,7 @@ public class UnitTestGenerator {
         }
     }
 
-    // ==================== INNER CLASSES ====================
+    // TODO: ==================== INNER CLASSES ====================
 
     private static class EndpointInfo {
         String methodName;

@@ -4,6 +4,10 @@ import com.llm.ai.core.common.UnitTestGenerator;
 import com.llm.ai.core.component.DebugSession;
 import com.llm.ai.project.debuggingAI.model.AIDebugResponse;
 import com.llm.ai.project.debuggingAI.model.ErrorContext;
+import com.llm.ai.project.debuggingAI.service.GeminiService;
+import com.llm.ai.project.debuggingAI.service.GroqService;
+import com.llm.ai.project.debuggingAI.service.NotificationService;
+import com.llm.ai.project.debuggingAI.service.OpenAIService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -32,65 +36,18 @@ class AIDebugServiceTest {
     private NotificationService notificationService;
     @Mock
     private UnitTestGenerator unitTestGenerator;
-    @Mock
-    private AutoFixService autoFixService;
 
     @Test
-    void testApplyAutoFix() {
-        // Arrange
-        ErrorContext context = mock(ErrorContext.class);
-        AIDebugResponse response = mock(AIDebugResponse.class);
-        boolean expected = true;
-        when(autoFixService.applyFix(any(ErrorContext.class), any(AIDebugResponse.class))).thenReturn(expected);
-
-        // Act
-        boolean result = aIDebugService.applyAutoFix(context, response);
-
-        // Assert
-        assertNotNull(result);
-        verify(autoFixService).applyFix(any(ErrorContext.class), any(AIDebugResponse.class));
-    }
-
-@Test
-void testAnalyzeError() {
-    // Arrange
-    ErrorContext errorContext = new ErrorContext();
-    errorContext.setExceptionType("NullPointerException");
-    errorContext.setMessage("Test error");
-
-    // Act
-    AIDebugResponse result = aIDebugService.analyzeError(errorContext);
-
-    // Assert
-    assertNotNull(result);
-}
-
-    @Test
-    void testGenerateAllTests() {
-        // Arrange
-        String className = "test";
-        String expected = "test";
-        when(unitTestGenerator.generateAllUnitTests(any(String.class))).thenReturn(expected);
-
-        // Act
-        String result = aIDebugService.generateAllTests(className);
-
-        // Assert
-        assertNotNull(result);
-        verify(unitTestGenerator).generateAllUnitTests(any(String.class));
-    }
-
-    @Test
-    void testMarkAsFixed() {
+    void testSendNotification() {
         // Arrange
         ErrorContext context = mock(ErrorContext.class);
         AIDebugResponse response = mock(AIDebugResponse.class);
 
         // Act
-        aIDebugService.markAsFixed(context, response);
+        aIDebugService.sendNotification(context, response);
 
         // Assert
-        verify(debugSession).recordSuccess(any(ErrorContext.class), any(AIDebugResponse.class));
+        verify(notificationService).sendErrorNotification(any(ErrorContext.class), any(AIDebugResponse.class), any(String.class));
     }
 
     @Test
@@ -121,15 +78,44 @@ void testAnalyzeError() {
     }
 
     @Test
-    void testSendNotification() {
+    void testMarkAsFixed() {
         // Arrange
         ErrorContext context = mock(ErrorContext.class);
         AIDebugResponse response = mock(AIDebugResponse.class);
 
         // Act
-        aIDebugService.sendNotification(context, response);
+        aIDebugService.markAsFixed(context, response);
 
         // Assert
-        verify(notificationService).sendErrorNotification(any(ErrorContext.class), any(AIDebugResponse.class), any(String.class));
+        verify(debugSession).recordSuccess(any(ErrorContext.class), any(AIDebugResponse.class));
     }
+
+    @Test
+    void testGenerateAllTests() {
+        // Arrange
+        String className = "test";
+        String expected = "test";
+        when(unitTestGenerator.generateAllUnitTests(any(String.class))).thenReturn(expected);
+
+        // Act
+        String result = aIDebugService.generateAllTests(className);
+
+        // Assert
+        assertNotNull(result);
+        verify(unitTestGenerator).generateAllUnitTests(any(String.class));
+    }
+
+@Test
+void testAnalyzeError() {
+    // Arrange
+    ErrorContext errorContext = new ErrorContext();
+    errorContext.setExceptionType("NullPointerException");
+    errorContext.setMessage("Test error");
+
+    // Act
+    AIDebugResponse result = aIDebugService.analyzeError(errorContext);
+
+    // Assert
+    assertNotNull(result);
+}
 }
