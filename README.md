@@ -56,11 +56,11 @@
 │  📍 AIDebugService                                                          │
 │     (Orkestrasi: pilih provider, bangun prompt, parse respons)              │
 │                               ↓                                             │
-│     ┌────────────────┬────────────────┬────────────────┐                    │
-│     │ 🤖 GroqService │ 🤖 OpenAIService │ 🤖 GeminiService │                │
-│     │   (Gratis)     │   (Berbayar)     │   (Berbayar)     │                │
-│     │ Llama 3.3 70B  │ GPT-3.5-Turbo   │ Gemini 2.0 Flash │                │
-│     └────────────────┴────────────────┴────────────────┘                    │
+│     ┌────────────────────┬────────────────────┬────────────────────┐        │
+│     │ 🤖 GroqService     │ 🤖 OpenAIService   │ 🤖 GeminiService   │        │
+│     │ (Gratis)           │ (Berbayar)         │ (Berbayar)         │        │
+│     │ Llama 3.3 70B      │ GPT-3.5-Turbo      │ Gemini 2.0 Flash   │        │
+│     └────────────────────┴────────────────────┴────────────────────┘        │
 │                               ↓                                             │
 │  📍 Output & Fitur Pendukung                                                │
 │     ┌──────────────┬──────────────┬──────────────┬──────────────┐          │
