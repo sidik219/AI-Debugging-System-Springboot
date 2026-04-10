@@ -41,42 +41,6 @@
 
 ---
 
-## 🏗️ Arsitektur Sistem
-
-AI DEBUGGING SYSTEM
-===================
-
-GlobalExceptionHandler
-  -> Menangkap semua exception
-        ↓
-ErrorExtractorService
-  -> Ekstrak stack trace, source code, line number
-        ↓
-AIDebugService
-  -> Orkestrasi: provider, prompt, parsing
-        ↓
-
-[ GroqService ]   [ OpenAIService ]   [ GeminiService ]
-   (Gratis)         (Berbayar)          (Berbayar)
-
-        ↓
-
-Output System:
-- Console (ANSI Color)
-- History (File Log)
-- Clipboard (Auto-Copy)
-- Discord (Notifikasi)
-
-Fitur Tambahan:
-- DebugSession
-- UnitTestGenerator
-- ErrorHistoryService
-- NotificationService
-- ClipboardService
-- ConsoleColors
-
----
-
 ## 🚀 Quick Start
 
 ### Prasyarat
