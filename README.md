@@ -43,45 +43,43 @@
 
 ## 🏗️ Arsitektur Sistem
 
-\`\`\`
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                           🤖 AI DEBUGGING SYSTEM                             │
+│                         🤖 AI DEBUGGING SYSTEM                               │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│  📍 GlobalExceptionHandler                                                   │
-│     (Menangkap semua exception di aplikasi)                                  │
-│                              ↓                                               │
-│  📍 ErrorExtractorService                                                    │
-│     (Ekstrak stack trace, source code, line number)                          │
-│                              ↓                                               │
-│  📍 AIDebugService                                                           │
-│     (Orkestrasi utama: pilih provider, bangun prompt, parse respons)         │
-│                              ↓                                               │
-│     ┌────────────────┬────────────────┬────────────────┐                     │
-│     │  🤖 GroqService │  🤖 OpenAIService │  🤖 GeminiService │                 │
-│     │   (GRATIS)      │    (Berbayar)    │    (Berbayar)    │                 │
-│     │  Llama 3.3 70B  │   GPT-3.5-Turbo  │  Gemini 2.0 Flash │                │
-│     └────────────────┴────────────────┴────────────────┘                     │
-│                              ↓                                               │
-│  📍 Output & Fitur Pendukung                                                 │
-│     ┌──────────────┬──────────────┬──────────────┬──────────────┐           │
-│     │ 🖥️ Console    │ 📁 History    │ 📋 Clipboard  │ 🔔 Discord    │           │
-│     │  (ANSI Color) │   (File Log)  │  (Auto-Copy) │  (Notifikasi) │           │
-│     └──────────────┴──────────────┴──────────────┴──────────────┘           │
-│                                                                              │
+│                                                                             │
+│  📍 GlobalExceptionHandler                                                  │
+│     (Menangkap semua exception di aplikasi)                                 │
+│                               ↓                                             │
+│  📍 ErrorExtractorService                                                   │
+│     (Ekstrak stack trace, source code, line number)                         │
+│                               ↓                                             │
+│  📍 AIDebugService                                                          │
+│     (Orkestrasi: pilih provider, bangun prompt, parse respons)              │
+│                               ↓                                             │
+│     ┌────────────────┬────────────────┬────────────────┐                    │
+│     │ 🤖 GroqService │ 🤖 OpenAIService │ 🤖 GeminiService │                │
+│     │   (Gratis)     │   (Berbayar)     │   (Berbayar)     │                │
+│     │ Llama 3.3 70B  │ GPT-3.5-Turbo   │ Gemini 2.0 Flash │                │
+│     └────────────────┴────────────────┴────────────────┘                    │
+│                               ↓                                             │
+│  📍 Output & Fitur Pendukung                                                │
+│     ┌──────────────┬──────────────┬──────────────┬──────────────┐          │
+│     │ 🖥️ Console    │ 📁 History    │ 📋 Clipboard  │ 🔔 Discord    │          │
+│     │ (ANSI Color) │ (File Log)   │ (Auto-Copy)  │ (Notifikasi) │          │
+│     └──────────────┴──────────────┴──────────────┴──────────────┘          │
+│                                                                             │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                          🔧 FITUR TAMBAHAN                                    │
+│                        🔧 FITUR TAMBAHAN                                     │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│  • 🧠 DebugSession          → Memory session (ingat percobaan sebelumnya)    │
-│  • 🧪 UnitTestGenerator     → Generate JUnit test otomatis                   │
-│  • 📝 ErrorHistoryService   → Simpan log error ke file                       │
-│  • 🔔 NotificationService   → Kirim notifikasi ke Discord/Slack              │
-│  • 📋 ClipboardService      → Auto-copy solusi ke clipboard                  │
-│  • 🎨 ConsoleColors         → Output console berwarna                        │
-│                                                                              │
+│                                                                             │
+│  • 🧠 DebugSession        → Memory session (ingat percobaan sebelumnya)     │
+│  • 🧪 UnitTestGenerator   → Generate JUnit test otomatis                    │
+│  • 📝 ErrorHistoryService → Simpan log error ke file                        │
+│  • 🔔 NotificationService → Kirim notifikasi ke Discord/Slack               │
+│  • 📋 ClipboardService    → Auto-copy solusi ke clipboard                   │
+│  • 🎨 ConsoleColors       → Output console berwarna                         │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
-\`\`\`
 
 ---
 
