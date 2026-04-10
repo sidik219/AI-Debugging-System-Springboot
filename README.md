@@ -41,6 +41,31 @@
 
 ---
 
+## 📊 Ringkasan Arsitektur
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                           AI DEBUGGING SYSTEM                               │
+├─────────────────────────────────────────────────────────────────────────────┤
+│  GlobalExceptionHandler (Menangkap semua exception)                         │
+│         ↓                                                                   │
+│  ErrorExtractorService (Ekstrak stack trace, source code)                   │
+│         ↓                                                                   │
+│  AIDebugService (Orkestrasi, pilih provider, parse respons)                 │
+│         ↓                                                                   │
+│  ┌─────────────┬─────────────┬─────────────┐                                │
+│  │ GroqService │ OpenAIService│ GeminiService│  (AI Providers)              │
+│  └─────────────┴─────────────┴─────────────┘                                │
+│         ↓                                                                   │
+│  Output: Console (warna) + History File + Clipboard + Discord Notification  │
+├─────────────────────────────────────────────────────────────────────────────┤
+│  Fitur Tambahan:                                                            │
+│  • DebugSession (Memory)          • UnitTestGenerator (Generate test)       │
+│  • ErrorHistoryService (Log)      • NotificationService (Discord/Slack)     │
+│  • ClipboardService (Copy)        • ConsoleColors (ANSI colors)             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+---
+
 ## 🚀 Quick Start
 
 ### Prasyarat
