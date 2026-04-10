@@ -41,28 +41,47 @@
 
 ---
 
-## 📊 Ringkasan Arsitektur
+## 🏗️ Arsitektur Sistem
 
+\`\`\`
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                           AI DEBUGGING SYSTEM                               │
+│                           🤖 AI DEBUGGING SYSTEM                             │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│  GlobalExceptionHandler (Menangkap semua exception)                         │
-│         ↓                                                                   │
-│  ErrorExtractorService (Ekstrak stack trace, source code)                   │
-│         ↓                                                                   │
-│  AIDebugService (Orkestrasi, pilih provider, parse respons)                 │
-│         ↓                                                                   │
-│  ┌─────────────┬─────────────┬─────────────┐                                │
-│  │ GroqService │ OpenAIService│ GeminiService│  (AI Providers)              │
-│  └─────────────┴─────────────┴─────────────┘                                │
-│         ↓                                                                   │
-│  Output: Console (warna) + History File + Clipboard + Discord Notification  │
+│                                                                              │
+│  📍 GlobalExceptionHandler                                                   │
+│     (Menangkap semua exception di aplikasi)                                  │
+│                              ↓                                               │
+│  📍 ErrorExtractorService                                                    │
+│     (Ekstrak stack trace, source code, line number)                          │
+│                              ↓                                               │
+│  📍 AIDebugService                                                           │
+│     (Orkestrasi utama: pilih provider, bangun prompt, parse respons)         │
+│                              ↓                                               │
+│     ┌────────────────┬────────────────┬────────────────┐                     │
+│     │  🤖 GroqService │  🤖 OpenAIService │  🤖 GeminiService │                 │
+│     │   (GRATIS)      │    (Berbayar)    │    (Berbayar)    │                 │
+│     │  Llama 3.3 70B  │   GPT-3.5-Turbo  │  Gemini 2.0 Flash │                │
+│     └────────────────┴────────────────┴────────────────┘                     │
+│                              ↓                                               │
+│  📍 Output & Fitur Pendukung                                                 │
+│     ┌──────────────┬──────────────┬──────────────┬──────────────┐           │
+│     │ 🖥️ Console    │ 📁 History    │ 📋 Clipboard  │ 🔔 Discord    │           │
+│     │  (ANSI Color) │   (File Log)  │  (Auto-Copy) │  (Notifikasi) │           │
+│     └──────────────┴──────────────┴──────────────┴──────────────┘           │
+│                                                                              │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│  Fitur Tambahan:                                                            │
-│  • DebugSession (Memory)          • UnitTestGenerator (Generate test)       │
-│  • ErrorHistoryService (Log)      • NotificationService (Discord/Slack)     │
-│  • ClipboardService (Copy)        • ConsoleColors (ANSI colors)             │
+│                          🔧 FITUR TAMBAHAN                                    │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  • 🧠 DebugSession          → Memory session (ingat percobaan sebelumnya)    │
+│  • 🧪 UnitTestGenerator     → Generate JUnit test otomatis                   │
+│  • 📝 ErrorHistoryService   → Simpan log error ke file                       │
+│  • 🔔 NotificationService   → Kirim notifikasi ke Discord/Slack              │
+│  • 📋 ClipboardService      → Auto-copy solusi ke clipboard                  │
+│  • 🎨 ConsoleColors         → Output console berwarna                        │
+│                                                                              │
 └─────────────────────────────────────────────────────────────────────────────┘
+\`\`\`
 
 ---
 
