@@ -10,6 +10,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.context.request.WebRequest;
+
+import java.time.LocalDateTime;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -35,8 +40,11 @@ public class GlobalExceptionHandler {
     @Value("${debug.ai.notify:true}")
     private boolean autoNotify;
 
+    @Value("${debug.mode:development}")
+    private String mode;
+
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<Object> handleAllExceptions(Exception ex) {
+    public ResponseEntity<Object> handleAllExceptions(Exception ex, WebRequest request) {
         // Extract error context
         ErrorContext context = errorExtractor.extractErrorContext(ex);
 
@@ -44,7 +52,11 @@ public class GlobalExceptionHandler {
         AIDebugResponse aiResponse = aiDebugService.analyzeError(context);
 
         // Print debug info
-        printDebugInfoToConsole(context, aiResponse);
+        if ("production".equals(mode)) {
+            printProductionError(context, aiResponse);
+        } else {
+            printDebugInfoToConsole(context, aiResponse);
+        }
 
         // Save history
         historyService.saveErrorHistory(context, aiResponse, provider);
@@ -57,10 +69,33 @@ public class GlobalExceptionHandler {
             notificationService.sendErrorNotification(context, aiResponse, provider);
         }
 
+        // Development: tambah detail exception
+        Map<String, Object> errorResponse = new LinkedHashMap<>();
+        errorResponse.put("timestamp", LocalDateTime.now());
+        errorResponse.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+        errorResponse.put("error", "Internal Server Error");
+        errorResponse.put("path", request.getDescription(false).replace("uri=", ""));
+
+        if (!"production".equals(mode)) {
+            errorResponse.put("exception", ex.getClass().getName());
+            errorResponse.put("message", ex.getMessage());
+        }
+
         return new ResponseEntity<>(
                 "Error occurred - Check console for AI debugging assistance",
                 HttpStatus.INTERNAL_SERVER_ERROR
         );
+    }
+
+    private void printProductionError(ErrorContext context, AIDebugResponse aiResponse) {
+        System.out.println("\n" + ConsoleColors.RED_BOLD + "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" + ConsoleColors.RESET);
+        System.out.println(ConsoleColors.RED_BOLD + "🚨 " +
+                context.getExceptionType().substring(context.getExceptionType().lastIndexOf('.') + 1) +
+                ConsoleColors.RESET + " di " + ConsoleColors.YELLOW + context.getMethodName() + "()" + ConsoleColors.RESET);
+        System.out.println(ConsoleColors.RED_BOLD + "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" + ConsoleColors.RESET);
+        System.out.println(ConsoleColors.YELLOW + "📌 " + context.getMessage() + ConsoleColors.RESET);
+        System.out.println("\n" + ConsoleColors.GREEN + "💡 Perbaikan:" + ConsoleColors.RESET);
+        System.out.println("   " + aiResponse.getSuggestedFix().replace("\n", "\n   "));
     }
 
     private void printDebugInfoToConsole(ErrorContext context, AIDebugResponse aiResponse) {

@@ -1,5 +1,6 @@
 package com.llm.ai.project.debuggingAI.service;
 
+import com.llm.ai.project.debuggingAI.util.ConsoleColors;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -27,7 +28,7 @@ public class GeminiService {
     @PostConstruct
     public void init() {
         boolean hasKey = apiKey != null && !apiKey.isEmpty() && !apiKey.equals("${GEMINI_API_KEY:}");
-        System.out.println("🔑 Gemini API Key configured: " + (hasKey ? "✅ YES" : "❌ NO"));
+        System.out.println(ConsoleColors.CYAN + "🔑 Gemini API Key: " + (hasKey ? "✅ YES" : "❌ NOT SET") + ConsoleColors.RESET);
     }
 
     public String analyzeError(String prompt) {

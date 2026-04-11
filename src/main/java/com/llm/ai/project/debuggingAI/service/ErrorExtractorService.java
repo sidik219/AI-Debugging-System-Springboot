@@ -84,7 +84,8 @@ public class ErrorExtractorService {
             Path path = Paths.get(filePath);
 
             if (Files.exists(path)) {
-                System.out.println("   📂 Found source file: " + filePath);
+//                System.out.println("   📂 Found source file: " + filePath);
+                System.out.println("   📂 Source: " + element.getFileName());
 
                 List<String> lines = Files.readAllLines(path);
                 int errorLine = element.getLineNumber();

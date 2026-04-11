@@ -116,15 +116,25 @@ public class AIDebugService {
     }
 
     private String callProvider(String prompt) {
-        return switch (provider.toLowerCase()) {
-            case "groq" -> groqService.analyzeError(prompt).block();
-            case "openai" -> openAIService != null ? openAIService.analyzeError(prompt).block() : null;
-            case "gemini" -> geminiService != null ? geminiService.analyzeError(prompt) : null;
-            default -> {
-                System.out.println(ConsoleColors.YELLOW + "⚠️ Provider " + provider + " tidak dikenal, pakai Groq" + ConsoleColors.RESET);
-                yield groqService.analyzeError(prompt).block();
+        try {
+            return switch (provider.toLowerCase()) {
+                case "groq" -> groqService.analyzeError(prompt).block();
+                case "openai" -> openAIService != null ? openAIService.analyzeError(prompt).block() : null;
+                case "gemini" -> geminiService != null ? geminiService.analyzeError(prompt) : null;
+                default -> {
+                    System.out.println(ConsoleColors.YELLOW + "⚠️ Provider " + provider + " tidak dikenal, pakai Groq" + ConsoleColors.RESET);
+                    yield groqService.analyzeError(prompt).block();
+                }
+            };
+        } catch (Exception e) {
+            String errorMsg = e.getMessage();
+            if (errorMsg != null && errorMsg.contains("api_key")) {
+                errorMsg = errorMsg.replaceAll("api_key=[^&\\s]+", "api_key=***MASKED***");
             }
-        };
+            System.err.println(ConsoleColors.RED + "❌ Error panggil AI: " + errorMsg + ConsoleColors.RESET);
+
+            return null;
+        }
     }
 
     // TODO: Promt B Indo

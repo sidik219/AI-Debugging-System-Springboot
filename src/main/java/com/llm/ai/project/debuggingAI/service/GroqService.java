@@ -1,5 +1,6 @@
 package com.llm.ai.project.debuggingAI.service;
 
+import com.llm.ai.project.debuggingAI.util.ConsoleColors;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -31,7 +32,7 @@ public class GroqService {
     @PostConstruct
     public void init() {
         boolean hasKey = apiKey != null && !apiKey.isEmpty() && !apiKey.startsWith("${");
-        System.out.println("🔑 Groq API Key configured: " + (hasKey ? "✅ YES" : "❌ NO"));
+        System.out.println(ConsoleColors.CYAN + "🔑 Groq API Key: " + (hasKey ? "✅ YES" : "❌ NOT SET") + ConsoleColors.RESET);
     }
 
     public Mono<String> analyzeError(String prompt) {
