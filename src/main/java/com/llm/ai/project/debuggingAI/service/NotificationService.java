@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -33,12 +34,19 @@ public class NotificationService {
     @Value("${notification.enabled:false}")
     private boolean notificationEnabled;
 
+    @Value("${notification.summary.enabled:false}")
+    private boolean summaryEnabled;
+
+    @Value("${notification.summary.cron:0 0 * * * *}")
+    private String summaryCron;
+
     @Value("${notification.rate-limit-seconds:60}")
     private int rateLimitSeconds;
 
-    private final Map<String, LocalDateTime> lastNotificationTime = new ConcurrentHashMap<>();
-
     private final WebClient webClient;
+    private final Map<String, LocalDateTime> lastNotificationTime = new ConcurrentHashMap<>();
+    private final Map<String, ErrorSummary> errorSummaries = new ConcurrentHashMap<>();
+    private LocalDateTime lastSummaryTime = LocalDateTime.now();
     private static final DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     public NotificationService(WebClient.Builder webClientBuilder) {
@@ -319,6 +327,120 @@ public class NotificationService {
                 .replace("}", "\\}")
                 .replace(".", "\\.")
                 .replace("!", "\\!");
+    }
+
+    // TODO: ==================== SUMMARY REPORT ====================
+
+    public void recordErrorForSummary(ErrorContext context) {
+        if (!summaryEnabled) return;
+
+        String key = context.getExceptionType() + "." +
+                context.getClassName() + "." +
+                context.getMethodName();
+
+        errorSummaries.compute(key, (k, v) -> {
+           if (v == null) {
+               return new ErrorSummary(context);
+           }
+
+           v.incrementCount();
+           v.updateLastOccurrence();
+
+           return v;
+        });
+    }
+
+    public void sendSummaryReport() {
+        if (!summaryEnabled || !notificationEnabled) return;
+        if (errorSummaries.isEmpty()) return;
+
+        LocalDateTime now = LocalDateTime.now();
+        long hours = Duration.between(lastSummaryTime, now).toHours();
+        lastSummaryTime = now;
+
+        int totalErrors = errorSummaries.values().stream().mapToInt(ErrorSummary::getCount).sum();
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("📊 **AI DEBUG SUMMARY** (Last ").append(hours).append(" hours)\n");
+        sb.append("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n");
+        sb.append("Total Errors: **").append(totalErrors).append("**\n\n");
+        sb.append("🔥 **Most Common Errors:**\n");
+
+        errorSummaries
+                .entrySet()
+                .stream()
+                .sorted((a, b) -> Integer.compare(b.getValue().getCount(), a.getValue().getCount()))
+                .limit(5)
+                .forEach(entry -> {
+                    ErrorSummary es = entry.getValue();
+                    sb.append("• `")
+                            .append(es.getExceptionType()).append("` at `")
+                            .append(es.getMethodLocation()).append("` - ")
+                            .append(es.getCount()).append("x\n");
+                });
+
+        String message = sb.toString();
+        if (discordWebhook != null && !discordWebhook.isEmpty()) {
+            sendSummaryToDiscord(message).subscribe();
+        }
+
+        if (telegramBotToken != null && !telegramBotToken.isEmpty()) {
+            sendTelegramMessage(message).subscribe();
+        }
+
+        errorSummaries.clear();
+
+        System.out.println(ConsoleColors.GREEN + "📊 Summary report sent!" + ConsoleColors.RESET);
+    }
+
+    private Mono<String> sendSummaryToDiscord(String message) {
+        Map<String, Object> payload = Map.of(
+                "username", "AI Debug Summary",
+                "content", message
+        );
+
+        return webClient.post()
+                .uri(discordWebhook)
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(payload)
+                .retrieve()
+                .bodyToMono(String.class);
+    }
+
+    public Map<String, Object> getSummaryStats() {
+        return Map.of(
+                "enabled", summaryEnabled,
+                "pendingErrors", errorSummaries.size(),
+                "lastSummaryTime", lastSummaryTime.toString()
+        );
+    }
+
+    public void clearSummaries() {
+        errorSummaries.clear();
+        System.out.println("🧹 Summaries cleared");
+    }
+
+    private static class ErrorSummary{
+        private final String exceptionType;
+        private final String methodLocation;
+        private int count;
+        private LocalDateTime lastOccurrence;
+
+        public ErrorSummary(ErrorContext context) {
+            this.exceptionType = context.getExceptionType()
+                    .substring(context.getExceptionType().lastIndexOf('.') + 1);
+            this.methodLocation = context.getClassName().substring(
+                    context.getClassName().lastIndexOf('.') + 1
+            ) + "." + context.getMethodName() + "()";
+            this.count = 1;
+            this.lastOccurrence = LocalDateTime.now();
+        }
+
+        public void incrementCount() { this.count++; }
+        public void updateLastOccurrence() { this.lastOccurrence = LocalDateTime.now(); }
+        public String getExceptionType() { return exceptionType; }
+        public String getMethodLocation() { return methodLocation; }
+        public int getCount() { return count; }
     }
 
     // TODO: ==================== PLAIN MESSAGE ====================

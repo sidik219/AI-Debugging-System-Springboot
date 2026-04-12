@@ -1,7 +1,9 @@
 package com.llm.ai.project.debuggingAI.controller;
 
 import com.llm.ai.core.common.UnitTestGenerator;
-import com.llm.ai.core.filter.RateLimitFilter;
+import com.llm.ai.core.component.DebugSession;
+import com.llm.ai.core.component.RateLimitFilter;
+import com.llm.ai.project.debuggingAI.model.AIDebugResponse;
 import com.llm.ai.project.debuggingAI.model.ErrorContext;
 import com.llm.ai.project.debuggingAI.service.ErrorExtractorService;
 import com.llm.ai.project.debuggingAI.service.NotificationService;
@@ -29,6 +31,9 @@ public class AIController {
 
     @Autowired
     private RateLimitFilter rateLimitFilter;
+
+    @Autowired
+    private DebugSession debugSession;
 
     @Value("${debug.rate-limit.enabled:false}")
     private boolean rateLimitEnabled;
@@ -107,20 +112,12 @@ public class AIController {
         return unitTestGenerator.generateAllUnitTests(modelClassName);
     }
 
-    // TODO: ========== NOTIFICATION ADMIN ==========
+    // TODO: ==================== ADMIN (NOTIFICATION, RATE LIMIT FILTER, SUMMARY) ====================
 
     @GetMapping("/notification-status")
     public Map<String, Object> notificationStatus() {
         return notificationService.getRateLimitStatus();
     }
-
-    @GetMapping("/clear-rate-limit")
-    public String clearRateLimit() {
-        notificationService.clearRateLimitCache();
-        return "✅ Rate limit cache cleared";
-    }
-
-    // TODO: ========== RATE LIMIT FILTER ADMIN ==========
 
     @GetMapping("/rate-limit-status")
     public Map<String, Object> rateLimitStatus() {
@@ -139,8 +136,55 @@ public class AIController {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
 
+        // Clear semua cache
+        notificationService.clearRateLimitCache();
         rateLimitFilter.clearCache();
-        return "✅ Rate limit cache cleared";
+
+        return "✅ All rate limit caches cleared";
+    }
+
+    @GetMapping("/session-stats")
+    public Map<String, Object> sessionStats() {
+        return debugSession.getStats();
+    }
+
+    @GetMapping("/clear-session")
+    public String clearSession() {
+        debugSession.clearAll();
+        return "✅ Session cleared";
+    }
+
+    @GetMapping("/send-summary")
+    public String sendSummary() {
+        notificationService.sendSummaryReport();
+        return "✅ Summary sent";
+    }
+
+    @GetMapping("/summary-stats")
+    public Map<String, Object> summaryStats() {
+        return notificationService.getSummaryStats();
+    }
+
+    @GetMapping("/clear-summaries")
+    public String clearSummaries() {
+        notificationService.clearSummaries();
+        return "✅ Summaries cleared";
+    }
+
+    @GetMapping("/mark-success")
+    public String markSuccess() {
+        ErrorContext ctx = new ErrorContext();
+        ctx.setExceptionType("java.lang.NullPointerException");
+        ctx.setClassName("com.llm.ai.project.debuggingAI.controller.AIController");
+        ctx.setMethodName("testError");
+        ctx.setLineNumber(58);
+
+        AIDebugResponse resp = new AIDebugResponse();
+        resp.setSuggestedFix("return nullString != null ? nullString.toUpperCase() : \"\";");
+        resp.setConfidence("HIGH");
+
+        debugSession.recordSuccess(ctx, resp);
+        return "✅ Marked as success";
     }
 
     // TODO: ==================== Ngawur Test ====================

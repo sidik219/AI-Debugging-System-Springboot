@@ -64,6 +64,9 @@ public class GlobalExceptionHandler {
         // Copy to clipboard
         clipboardService.copySolutionToClipboard(aiResponse);
 
+        // Summary Report
+        notificationService.recordErrorForSummary(context);
+
         // Send notification
         if (autoNotify) {
             notificationService.sendErrorNotification(context, aiResponse, provider);

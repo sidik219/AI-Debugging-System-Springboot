@@ -1,4 +1,4 @@
-package com.llm.ai.core.filter;
+package com.llm.ai.core.component;
 
 import io.github.bucket4j.Bandwidth;
 import io.github.bucket4j.Bucket;

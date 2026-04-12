@@ -1,10 +1,19 @@
 package com.llm.ai.core.component;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.llm.ai.project.debuggingAI.model.AIDebugResponse;
 import com.llm.ai.project.debuggingAI.model.ErrorContext;
 import com.llm.ai.project.debuggingAI.util.ConsoleColors;
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -15,9 +24,63 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 public class DebugSession {
 
+    @Value("${debug.session.persist:true}")
+    private boolean persistSession;
+
+    @Value("${debug.session.path:./error-logs/sessions}")
+    private String sessionPath;
+
     private final Map<String, List<FixAttempt>> attemptHistory = new ConcurrentHashMap<>();
     private final Map<String, String> successfulFixes = new ConcurrentHashMap<>();
+    private final ObjectMapper objectMapper = new ObjectMapper();
     private static final DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ofPattern("HH:mm:ss");
+    private int loadedFixesCount = 0;
+
+    @PostConstruct
+    public void loadFromFile() {
+        if (!persistSession) return;
+
+        try {
+            File file = new File(sessionPath + "/successful-fixes.json");
+            if (file.exists()) {
+                Map<String, String> loadedFixes = objectMapper.readValue(
+                        file,
+                        new TypeReference<Map<String, String>>(){}
+                );
+
+                successfulFixes.putAll(loadedFixes);
+                loadedFixesCount = loadedFixes.size();
+            }
+        } catch (Exception e) {
+            System.err.println("⚠️ Failed to load session: " + e.getMessage());
+        }
+    }
+
+    @EventListener(ApplicationReadyEvent.class)
+    public void printLoadStatus() {
+        if (persistSession && loadedFixesCount > 0) {
+            System.out.println(ConsoleColors.GREEN + "📂 Session loaded: " + loadedFixesCount + " cached fixes" + ConsoleColors.RESET);
+        }
+    }
+
+    @PreDestroy
+    public void saveToFile() {
+        if (!persistSession) return;
+
+        try {
+            File dir = new File(sessionPath);
+            if (!dir.exists()) {
+                dir.mkdirs();
+            }
+
+            objectMapper.writerWithDefaultPrettyPrinter()
+                    .writeValue(new File(sessionPath + "/successful-fixes.json"), successfulFixes);
+
+            System.out.println(ConsoleColors.GREEN + "💾 Session saved: " + successfulFixes.size() + " fixes" + ConsoleColors.RESET);
+        } catch (IOException e) {
+            System.err.println("❌ Failed to save session: " + e.getMessage());
+        }
+    }
 
     public void recordAttempt(ErrorContext context, AIDebugResponse response) {
         String signature = generateSignature(context);
@@ -107,6 +170,29 @@ public class DebugSession {
             });
         }
         System.out.println();
+    }
+
+    public void clearAll() {
+        attemptHistory.clear();
+        successfulFixes.clear();
+
+        if (persistSession) {
+            try {
+                new File(sessionPath + "/successful-fixes.json").delete();
+                new File(sessionPath + "/attempts.json").delete();
+            } catch (Exception e) {}
+        }
+
+        System.out.println(ConsoleColors.YELLOW + "🧹 Session cleared" + ConsoleColors.RESET);
+    }
+
+    public Map<String, Object> getStats() {
+        return Map.of(
+                "attemptHistorySize", attemptHistory.size(),
+                "successfulFixesSize", successfulFixes.size(),
+                "persistEnabled", persistSession,
+                "sessionPath", sessionPath
+        );
     }
 
     private static class FixAttempt {

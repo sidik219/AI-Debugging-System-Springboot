@@ -30,7 +30,7 @@ public class AIDebugService {
     @Autowired
     private UnitTestGenerator unitTestGenerator;
 
-    @Value("${debug.ai.provider:groq}")
+    @Value("${debug.ai.providers:groq,openai,gemini}")
     private String provider;
 
     @Value("${debug.ai.enabled:true}")
@@ -41,6 +41,8 @@ public class AIDebugService {
 
     @Value("${debug.autofix.enabled:false}")
     private boolean autoFixEnabled;
+
+    private String lastSuccessfulProvider = null;
 
     public AIDebugResponse analyzeError(ErrorContext errorContext) {
         if (!aiEnabled) {
@@ -68,10 +70,12 @@ public class AIDebugService {
 
         try {
             String prompt = buildPrompt(errorContext);
-            String aiResponse = callProvider(prompt);
+            String aiResponse = callProviderWithFallback(prompt);
+//            String aiResponse = callProvider(prompt);
 
             if (aiResponse != null && !aiResponse.isEmpty()) {
-                System.out.println(ConsoleColors.GREEN + "✅ Response dari " + provider + " diterima" + ConsoleColors.RESET);
+                String successProvider = getLastSuccessfulProvider();
+                System.out.println(ConsoleColors.GREEN + "✅ Response dari " + successProvider + " diterima" + ConsoleColors.RESET);
                 AIDebugResponse response = parseAIResponse(aiResponse, errorContext);
 
                 if (sessionEnabled) {
@@ -115,27 +119,65 @@ public class AIDebugService {
         }
     }
 
-    private String callProvider(String prompt) {
-        try {
-            return switch (provider.toLowerCase()) {
-                case "groq" -> groqService.analyzeError(prompt).block();
-                case "openai" -> openAIService != null ? openAIService.analyzeError(prompt).block() : null;
-                case "gemini" -> geminiService != null ? geminiService.analyzeError(prompt) : null;
-                default -> {
-                    System.out.println(ConsoleColors.YELLOW + "⚠️ Provider " + provider + " tidak dikenal, pakai Groq" + ConsoleColors.RESET);
-                    yield groqService.analyzeError(prompt).block();
-                }
-            };
-        } catch (Exception e) {
-            String errorMsg = e.getMessage();
-            if (errorMsg != null && errorMsg.contains("api_key")) {
-                errorMsg = errorMsg.replaceAll("api_key=[^&\\s]+", "api_key=***MASKED***");
-            }
-            System.err.println(ConsoleColors.RED + "❌ Error panggil AI: " + errorMsg + ConsoleColors.RESET);
+    private String callProviderWithFallback(String prompt) {
+        String[] providers = provider.split(",");
 
-            return null;
+        for (String p : providers) {
+            String providerName = p.trim().toLowerCase();
+            System.out.println(ConsoleColors.CYAN + "   🚀 Trying provider: " + providerName + ConsoleColors.RESET);
+
+            try {
+                String response = callSpesificProvider(providerName, prompt);
+                if (response != null && !response.isEmpty()) {
+                    System.out.println(ConsoleColors.GREEN + "   ✅ " + providerName + " SUCCESS" + ConsoleColors.RESET);
+                    lastSuccessfulProvider = providerName;
+
+                    return response;
+                }
+            } catch (Exception e) {
+                System.err.println(ConsoleColors.YELLOW + "   ⚠️ " + providerName + " failed: " + e.getMessage() + ConsoleColors.RESET);
+            }
         }
+
+        System.out.println(ConsoleColors.RED + "   ❌ All providers failed!" + ConsoleColors.RESET);
+        return null;
     }
+
+    private String callSpesificProvider(String providerName, String prompt) {
+        return switch (providerName) {
+            case "groq" -> groqService.analyzeError(prompt).block();
+            case "openai" -> openAIService != null ? openAIService.analyzeError(prompt).block() : null;
+            case "gemini" -> geminiService != null ? geminiService.analyzeError(prompt) : null;
+            default -> null;
+        };
+    }
+
+    private String getLastSuccessfulProvider() {
+        return lastSuccessfulProvider != null ? lastSuccessfulProvider : "unknown";
+    }
+
+    // TODO: Old Code
+//    private String callProvider(String prompt) {
+//        try {
+//            return switch (provider.toLowerCase()) {
+//                case "groq" -> groqService.analyzeError(prompt).block();
+//                case "openai" -> openAIService != null ? openAIService.analyzeError(prompt).block() : null;
+//                case "gemini" -> geminiService != null ? geminiService.analyzeError(prompt) : null;
+//                default -> {
+//                    System.out.println(ConsoleColors.YELLOW + "⚠️ Provider " + provider + " tidak dikenal, pakai Groq" + ConsoleColors.RESET);
+//                    yield groqService.analyzeError(prompt).block();
+//                }
+//            };
+//        } catch (Exception e) {
+//            String errorMsg = e.getMessage();
+//            if (errorMsg != null && errorMsg.contains("api_key")) {
+//                errorMsg = errorMsg.replaceAll("api_key=[^&\\s]+", "api_key=***MASKED***");
+//            }
+//            System.err.println(ConsoleColors.RED + "❌ Error panggil AI: " + errorMsg + ConsoleColors.RESET);
+//
+//            return null;
+//        }
+//    }
 
     // TODO: Promt B Indo
     private String buildPrompt(ErrorContext errorContext) {
