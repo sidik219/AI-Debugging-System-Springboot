@@ -1,5 +1,6 @@
 package com.llm.ai.core.exception;
 
+import com.llm.ai.project.debuggingAI.controller.DashboardController;
 import com.llm.ai.project.debuggingAI.model.AIDebugResponse;
 import com.llm.ai.project.debuggingAI.model.ErrorContext;
 import com.llm.ai.project.debuggingAI.service.*;
@@ -19,6 +20,15 @@ import java.util.Map;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
+    @Value("${debug.ai.provider:groq}")
+    private String provider;
+
+    @Value("${debug.ai.notify:true}")
+    private boolean autoNotify;
+
+    @Value("${debug.mode:development}")
+    private String mode;
+
     @Autowired
     private ErrorExtractorService errorExtractor;
 
@@ -34,14 +44,8 @@ public class GlobalExceptionHandler {
     @Autowired
     private NotificationService notificationService;
 
-    @Value("${debug.ai.provider:groq}")
-    private String provider;
-
-    @Value("${debug.ai.notify:true}")
-    private boolean autoNotify;
-
-    @Value("${debug.mode:development}")
-    private String mode;
+    @Autowired
+    private DashboardController dashboardController;
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Object> handleAllExceptions(Exception ex, WebRequest request) {
@@ -71,6 +75,9 @@ public class GlobalExceptionHandler {
         if (autoNotify) {
             notificationService.sendErrorNotification(context, aiResponse, provider);
         }
+
+        // Dashboard
+        dashboardController.broadcastNewError(context, aiResponse.getAnalysis(), aiResponse.getSuggestedFix());
 
         // Development: tambah detail exception
         Map<String, Object> errorResponse = new LinkedHashMap<>();
