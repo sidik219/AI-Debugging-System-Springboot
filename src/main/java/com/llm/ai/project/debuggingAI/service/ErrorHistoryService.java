@@ -106,4 +106,21 @@ public class ErrorHistoryService {
             System.err.println("❌ Gagal membaca history: " + e.getMessage());
         }
     }
+
+    public String getLogPath() {
+        if (logPath == null) return "error-logs";
+
+        // Normalisasi: hapus ./ atau .\ di depan
+        String normalized = logPath.trim();
+        if (normalized.startsWith("./") || normalized.startsWith(".\\")) {
+            normalized = normalized.substring(2);
+        }
+
+        // Jika kosong, pakai default
+        if (normalized.isEmpty()) {
+            normalized = "error-logs";
+        }
+
+        return normalized;
+    }
 }
