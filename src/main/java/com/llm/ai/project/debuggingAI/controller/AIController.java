@@ -189,7 +189,7 @@ public class AIController {
 
     // TODO: ==================== Ngawur Test ====================
 
-    @GetMapping("/kontol")
+    @GetMapping("/bebas")
     public String obj(String key) {
         Map<Integer, String> mmk = new HashMap<>();
         mmk.put(0,"knjt");
