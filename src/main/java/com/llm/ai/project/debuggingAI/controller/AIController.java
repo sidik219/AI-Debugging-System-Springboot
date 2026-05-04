@@ -5,10 +5,8 @@ import com.llm.ai.core.component.DebugSession;
 import com.llm.ai.core.component.RateLimitFilter;
 import com.llm.ai.project.debuggingAI.model.AIDebugResponse;
 import com.llm.ai.project.debuggingAI.model.ErrorContext;
-import com.llm.ai.project.debuggingAI.model.TestEntity;
 import com.llm.ai.project.debuggingAI.service.ErrorExtractorService;
 import com.llm.ai.project.debuggingAI.service.NotificationService;
-import com.llm.ai.project.debuggingAI.service.TestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -36,9 +34,6 @@ public class AIController {
 
     @Autowired
     private DebugSession debugSession;
-
-    @Autowired
-    private TestService testService;
 
     @Value("${debug.rate-limit.enabled:false}")
     private boolean rateLimitEnabled;
@@ -190,29 +185,6 @@ public class AIController {
 
         debugSession.recordSuccess(ctx, resp);
         return "✅ Marked as success";
-    }
-
-    // TODO: ==================== All Ekosistem Test ====================
-
-    @GetMapping("/test-ekosistem/service-error")
-    public TestEntity testServiceError(@RequestParam String name, @RequestParam(defaultValue = "10") Integer value) {
-        return testService.createEntity(name, value);
-    }
-
-    @GetMapping("/test-ekosistem/repo-error")
-    public TestEntity testRepoError(@RequestParam(defaultValue = "1") Long id) {
-        return testService.getEntityById(id);
-    }
-
-    @GetMapping("/test-ecosystem/delete-error")
-    public String testDeleteError(@RequestParam Long id) {
-        testService.deleteEntity(id);
-        return "Deleted";
-    }
-
-    @GetMapping("/test-ecosystem/calc-error")
-    public Integer testCalcError(@RequestParam Long id, @RequestParam(defaultValue = "0") Integer multiplier) {
-        return testService.calculateValue(id, multiplier);
     }
 
     // TODO: ==================== Ngawur Test ====================
