@@ -33,11 +33,13 @@
 | **Discord/Slack Notification** | Notifikasi real-time ke channel team | ✅ | Sudah di test aman |
 | **Unit Test Generator** | Generate JUnit test otomatis untuk method yang error (Masih tahap Develop 68.5%) | ⏳ | Aman tapi perlu di test kembali |
 
-### 🔮 Level 3 - Advanced (Coming Soon)
-- Web Dashboard monitoring
-- IntelliJ IDEA Plugin
-- Learning System
-- Performance Impact Analysis
+### 🔮 Level 3 - Advanced (Masih Development)
+| Fitur | Deskripsi | Status | Catatan |
+|-------|-----------|--------|---------|
+| **Web Dashboard monitoring** | Visual monitoring error secara real-time melalui browser | ✅ | Sudah di test aman |
+| **IntelliJ IDEA Plugin** | AI Debug Assistant langsung di dalam IDE untuk analisis error cepat | ✅ | Sudah di test aman |
+| **Learning System** | AI belajar dari fix yang berhasil | ⏳ | Development |
+| **Performance Impact Analysis** | Menganalisis dampak performa dari setiap error (response time, memory, CPU) | ⏳ | Development |
 
 ---
 
