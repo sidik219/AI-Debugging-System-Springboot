@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.llm.ai.project.debuggingAI.model.AIDebugResponse;
 import com.llm.ai.project.debuggingAI.model.ErrorContext;
+import com.llm.ai.project.debuggingAI.payload.FixReport;
 import com.llm.ai.project.debuggingAI.util.ConsoleColors;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
@@ -17,6 +18,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -33,6 +35,7 @@ public class DebugSession {
     private final Map<String, List<FixAttempt>> attemptHistory = new ConcurrentHashMap<>();
     private final Map<String, String> successfulFixes = new ConcurrentHashMap<>();
     private final ObjectMapper objectMapper = new ObjectMapper();
+    private final List<Map<String, Object>> fixReports = new ArrayList<>();
     private static final DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ofPattern("HH:mm:ss");
     private int loadedFixesCount = 0;
 
@@ -205,5 +208,23 @@ public class DebugSession {
             this.solution = solution;
             this.code = code;
         }
+    }
+
+    public void recordFixReport(FixReport report) {
+        Map<String, Object> record = new HashMap<>();
+        record.put("developerName", report.getDeveloperName());
+        record.put("deviceName", report.getDeviceName());
+        record.put("methodName", report.getMethodName());
+        record.put("description", report.getDescription());
+        record.put("status", report.getStatus());
+        record.put("timestamp", LocalDateTime.now().toString());
+
+        fixReports.add(record);
+
+        System.out.println(ConsoleColors.GREEN + "📝 Fix report recorded: " + report.getMethodName() + ConsoleColors.RESET);
+    }
+
+    public List<Map<String, Object>> getFixReport() {
+        return fixReports;
     }
 }

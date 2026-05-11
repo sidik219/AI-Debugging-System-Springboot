@@ -2,6 +2,7 @@ package com.llm.ai.project.debuggingAI.service;
 
 import com.llm.ai.project.debuggingAI.model.AIDebugResponse;
 import com.llm.ai.project.debuggingAI.model.ErrorContext;
+import com.llm.ai.project.debuggingAI.payload.FixReport;
 import com.llm.ai.project.debuggingAI.util.ConsoleColors;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -441,6 +442,58 @@ public class NotificationService {
         public String getExceptionType() { return exceptionType; }
         public String getMethodLocation() { return methodLocation; }
         public int getCount() { return count; }
+    }
+
+    public void sendFixReport(FixReport report) {
+        if (!notificationEnabled) {
+            System.out.println(ConsoleColors.YELLOW + "🔕 Notifikasi dinonaktifkan" + ConsoleColors.RESET);
+            return;
+        }
+
+        String message = String.format(
+                "✅ **BUG FIXED!**\n" +
+                        "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n" +
+                        "👤 **Developer:** %s\n" +
+                        "💻 **Device:** `%s`\n" +
+                        "📋 **Method:** `%s`\n" +
+                        "📝 **Deskripsi:** %s\n" +
+                        "🚨 **Status:** `%s`\n" +
+                        "🕐 **Waktu:** %s",
+                escapeMarkdown(report.getDeveloperName()),
+                escapeMarkdown(report.getDeviceName()),
+                escapeMarkdown(report.getMethodName()),
+                escapeMarkdown(report.getDescription() != null ? report.getDescription() : "-"),
+                escapeMarkdown(report.getStatus()),
+                LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+        );
+
+        if (discordWebhook != null && !discordWebhook.isEmpty()) {
+            sendToDiscordPlain(message).subscribe();
+            System.out.println(ConsoleColors.GREEN + "📤 Fix report terkirim ke Discord" + ConsoleColors.RESET);
+        }
+
+        if (telegramBotToken != null && !telegramBotToken.isEmpty() &&
+            telegramChatId != null && !telegramChatId.isEmpty()) {
+            sendTelegramMessage(message).subscribe();
+            System.out.println(ConsoleColors.GREEN + "📤 Fix report terkirim ke Telegram" + ConsoleColors.RESET);
+        }
+    }
+
+    private Mono<String> sendToDiscordPlain(String message) {
+        Map<String, String> payload = Map.of("content", message);
+        return webClient.post()
+                .uri(discordWebhook)
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(payload)
+                .retrieve()
+                .bodyToMono(String.class);
+    }
+
+    private String escapeMarkdown(String text) {
+        if (text == null) return "-";
+        return text.replace("_", "\\_")
+                .replace("*", "\\*")
+                .replace("`", "\\`");
     }
 
     // TODO: ==================== PLAIN MESSAGE ====================
