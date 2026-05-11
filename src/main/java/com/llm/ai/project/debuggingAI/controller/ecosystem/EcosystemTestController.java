@@ -1,4 +1,4 @@
-package com.llm.ai.project.debuggingAI.controller;
+package com.llm.ai.project.debuggingAI.controller.ecosystem;
 
 import com.llm.ai.project.debuggingAI.model.TestEntity;
 import com.llm.ai.project.debuggingAI.payload.OrderRequest;
@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/ekosistem")
-public class EkosistemTestController {
+public class EcosystemTestController {
 
     @Autowired
     private TestService testService;

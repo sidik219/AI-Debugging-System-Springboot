@@ -50,7 +50,24 @@ public class AIDebugService {
             return ruleBasedAnalysis(errorContext);
         }
 
-        // Cek cached solution
+        // TODO: ==================== 1. CEK AI LEARNING ====================
+
+        String signature = generateSignature(errorContext);
+        String learnedSolution = debugSession.getBestSolution(signature);
+
+        if (learnedSolution != null) {
+            System.out.println(ConsoleColors.GREEN + "🧠 AI Learning: Langsung kasih solusi terbaik!" + ConsoleColors.RESET);
+            System.out.println(ConsoleColors.GREEN + "   (Skip panggil AI - hemat token)" + ConsoleColors.RESET);
+
+            AIDebugResponse response = new AIDebugResponse();
+            response.setAnalysis("(Solusi dari AI Learning System)");
+            response.setSuggestedFix(learnedSolution);
+            response.setConfidence("HIGH");
+            return response;
+        }
+
+        // TODO: ==================== 2. CEK CACHED SOLUTION ====================
+
         if (sessionEnabled) {
             String cached = debugSession.getCachedSolution(errorContext);
             if (cached != null) {
@@ -62,6 +79,8 @@ public class AIDebugService {
                 return cachedResponse;
             }
         }
+
+        // TODO: ==================== 3. CALL AI  ====================
 
         System.out.println(ConsoleColors.CYAN + "🤖 Provider AI: " + provider.toUpperCase() + ConsoleColors.RESET);
 
@@ -77,6 +96,10 @@ public class AIDebugService {
                 String successProvider = getLastSuccessfulProvider();
                 System.out.println(ConsoleColors.GREEN + "✅ Response dari " + successProvider + " diterima" + ConsoleColors.RESET);
                 AIDebugResponse response = parseAIResponse(aiResponse, errorContext);
+
+                if (response.getSuggestedFix() != null && !response.getSuggestedFix().isEmpty()) {
+                    debugSession.recordSolution(signature, response.getSuggestedFix());
+                }
 
                 if (sessionEnabled) {
                     debugSession.recordAttempt(errorContext, response);
@@ -154,6 +177,13 @@ public class AIDebugService {
 
     private String getLastSuccessfulProvider() {
         return lastSuccessfulProvider != null ? lastSuccessfulProvider : "unknown";
+    }
+
+    private String generateSignature(ErrorContext context) {
+        return context.getExceptionType() + ":" +
+                context.getClassName() + ":" +
+                context.getMethodName() + ":" +
+                context.getLineNumber();
     }
 
     // TODO: Old Code

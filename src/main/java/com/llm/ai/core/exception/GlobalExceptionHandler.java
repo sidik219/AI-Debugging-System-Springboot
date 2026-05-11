@@ -1,6 +1,6 @@
 package com.llm.ai.core.exception;
 
-import com.llm.ai.project.debuggingAI.controller.DashboardController;
+import com.llm.ai.project.debuggingAI.controller.dashboard.MonitoringController;
 import com.llm.ai.project.debuggingAI.model.AIDebugResponse;
 import com.llm.ai.project.debuggingAI.model.ErrorContext;
 import com.llm.ai.project.debuggingAI.service.*;
@@ -45,7 +45,7 @@ public class GlobalExceptionHandler {
     private NotificationService notificationService;
 
     @Autowired
-    private DashboardController dashboardController;
+    private MonitoringController monitoringController;
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Object> handleAllExceptions(Exception ex, WebRequest request) {
@@ -77,7 +77,7 @@ public class GlobalExceptionHandler {
         }
 
         // Dashboard
-        dashboardController.broadcastNewError(context, aiResponse.getAnalysis(), aiResponse.getSuggestedFix());
+        monitoringController.broadcastNewError(context, aiResponse.getAnalysis(), aiResponse.getSuggestedFix());
 
         // Development: tambah detail exception
         Map<String, Object> errorResponse = new LinkedHashMap<>();

@@ -1,4 +1,4 @@
-package com.llm.ai.project.debuggingAI.controller;
+package com.llm.ai.project.debuggingAI.controller.dashboard;
 
 import com.llm.ai.core.component.DebugSession;
 import com.llm.ai.project.debuggingAI.model.ErrorContext;
@@ -23,19 +23,13 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("api/dashboard")
 @CrossOrigin(origins = "*")
-public class DashboardController {
+public class MonitoringController {
 
     @Autowired
     private ErrorHistoryService historyService;
 
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
-
-    @Autowired
-    private NotificationService notificationService;
-
-    @Autowired
-    private DebugSession debugSession;
 
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
@@ -351,45 +345,5 @@ public class DashboardController {
 
         // Default
         return possiblePaths[0];
-    }
-
-    // TODO: ==================== SEND REPORT FIX ERROR ====================
-
-    @PostMapping("/report-fix")
-    public ResponseEntity<?> reportFix(@RequestBody FixReport report) {
-        report.setDeviceName(SystemInfo.getDeviceName());
-
-        if (report.getMethodName() == null || report.getMethodName().trim().isEmpty()) {
-            return ResponseEntity.badRequest().body(Map.of(
-                    "success", false,
-                    "error", "Method name is required!"
-            ));
-        }
-        if (report.getDeveloperName() == null || report.getDeveloperName().trim().isEmpty()) {
-            return ResponseEntity.badRequest().body(Map.of(
-                    "success", false,
-                    "error", "Developer name is required!"
-            ));
-        }
-        if (report.getStatus() == null || report.getStatus().trim().isEmpty()) {
-            report.setStatus("SELESAI");
-        }
-
-        notificationService.sendFixReport(report);
-        debugSession.recordFixReport(report);
-
-        return ResponseEntity.ok(Map.of(
-                "success", true,
-                "message", "Fix report sent!",
-                "deviceName", report.getDeviceName()
-        ));
-    }
-
-    @GetMapping("/device-info")
-    public Map<String, String> getDeviceInfo() {
-        return Map.of(
-                "deviceName", SystemInfo.getDeviceName(),
-                "osName", SystemInfo.getOsName()
-        );
     }
 }

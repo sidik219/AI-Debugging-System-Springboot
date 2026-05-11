@@ -22,6 +22,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 @Component
 public class DebugSession {
@@ -34,6 +36,7 @@ public class DebugSession {
 
     private final Map<String, List<FixAttempt>> attemptHistory = new ConcurrentHashMap<>();
     private final Map<String, String> successfulFixes = new ConcurrentHashMap<>();
+    private final Map<String, String> learnedSolutions = new ConcurrentHashMap<>();
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final List<Map<String, Object>> fixReports = new ArrayList<>();
     private static final DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ofPattern("HH:mm:ss");
@@ -210,6 +213,8 @@ public class DebugSession {
         }
     }
 
+    // TODO: ==================== REPORT FIX ====================
+
     public void recordFixReport(FixReport report) {
         Map<String, Object> record = new HashMap<>();
         record.put("developerName", report.getDeveloperName());
@@ -226,5 +231,42 @@ public class DebugSession {
 
     public List<Map<String, Object>> getFixReport() {
         return fixReports;
+    }
+
+    // TODO: ==================== AI LEARNING ====================
+
+    public void recordSolution(String signature, String solution) {
+        if (solution == null || solution.isEmpty()) return;
+
+        String oldSolution = learnedSolutions.get(signature);
+        learnedSolutions.put(signature, solution);
+        
+        if (oldSolution == null) {
+            System.out.println(ConsoleColors.GREEN + "🧠 AI Learning: Solusi baru disimpan [" + learnedSolutions.size() + " total]" + ConsoleColors.RESET);
+        } else if (!oldSolution.equals(solution)) {
+            System.out.println(ConsoleColors.CYAN + "🧠 AI Learning: Solusi diperbarui" + ConsoleColors.RESET);
+        }
+    }
+
+    public String getBestSolution(String signature) {
+        return learnedSolutions.get(signature);
+    }
+
+    public Map<String, String> getLearnedSolutions() {
+        return new HashMap<>(learnedSolutions);
+    }
+
+    public Map<String, Object> getLearningStats() {
+        return Map.of(
+                "totalLearned", learnedSolutions.size(),
+                "recentSignatures", learnedSolutions.keySet().stream()
+                        .limit(5)
+                        .collect(Collectors.toList())
+        );
+    }
+
+    public void clearLearning() {
+        learnedSolutions.clear();
+        System.out.println(ConsoleColors.YELLOW + "🧹 AI Learning cache cleared" + ConsoleColors.RESET);
     }
 }
