@@ -52,8 +52,8 @@
 │ 1. AI LEARNING (Cek Cache Solusi)                               │
 |-----------------------------------------------------------------|
 │    "Pernah lihat error ini sebelumnya?"                         │
-│    ├── YA → Langsung kasih solusi terbaik (SKIP AI)             │
-│    └── TIDAK → Lanjut ke Memory Session                         │
+│    |-- YA → Langsung kasih solusi terbaik (SKIP AI)             │
+│    |-- TIDAK → Lanjut ke Memory Session                         │
 |-----------------------------------------------------------------|
     │
     ▼
@@ -61,8 +61,8 @@
 │ 2. MEMORY SESSION (Cek Percobaan Sebelumnya)                    │
 |-----------------------------------------------------------------|
 │    "Ada percobaan fix sebelumnya?"                              │
-│    ├── YA → Jangan ulangi solusi yang GAGAL                     │
-│    └── TIDAK → Lanjut panggil AI                                │
+│    |-- YA → Jangan ulangi solusi yang GAGAL                     │
+│    |-- TIDAK → Lanjut panggil AI                                │
 |-----------------------------------------------------------------|
     │
     ▼
