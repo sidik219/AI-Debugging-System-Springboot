@@ -46,6 +46,46 @@
 ## 🏗️ Arsitektur Sistem
 # <img src="https://github.com/sidik219/AI-Debugging-System-Springboot/blob/main/assets/arsitektur%20project.png" width="800" />
 
+### FLOW ERROR (AI LEARNING -> MEMORY SESSION -> ERROR HISTORY)
+
+|-----------------------------------------------------------------|
+│ 1. AI LEARNING (Cek Cache Solusi)                               │
+|-----------------------------------------------------------------|
+│    "Pernah lihat error ini sebelumnya?"                         │
+│    ├── YA → Langsung kasih solusi terbaik (SKIP AI)             │
+│    └── TIDAK → Lanjut ke Memory Session                         │
+|-----------------------------------------------------------------|
+    │
+    ▼
+|-----------------------------------------------------------------|
+│ 2. MEMORY SESSION (Cek Percobaan Sebelumnya)                    │
+|-----------------------------------------------------------------|
+│    "Ada percobaan fix sebelumnya?"                              │
+│    ├── YA → Jangan ulangi solusi yang GAGAL                     │
+│    └── TIDAK → Lanjut panggil AI                                │
+|-----------------------------------------------------------------|
+    │
+    ▼
+|-----------------------------------------------------------------|
+│ 3. PANGGIL AI (Groq/OpenAI/Gemini)                              │
+|-----------------------------------------------------------------|
+│    AI kasih solusi baru                                         │
+│    → Simpan ke AI Learning (untuk error berikutnya)             │
+│    → Simpan ke Memory Session (untuk tracking percobaan)        │
+|-----------------------------------------------------------------|
+    │
+    ▼
+|-----------------------------------------------------------------|
+│ 4. ERROR HISTORY (Catat Semua)                                  │
+|-----------------------------------------------------------------|
+│    Simpan ke file .log:                                         │
+│    • Waktu error                                                │
+│    • Tipe exception                                             │
+│    • Lokasi error                                               │
+│    • Solusi dari AI                                             │
+│    • Keyakinan AI                                               │
+|-----------------------------------------------------------------|
+
 ---
 
 ## 🚀 Quick Start
