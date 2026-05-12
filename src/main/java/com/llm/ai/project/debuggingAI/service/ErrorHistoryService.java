@@ -43,7 +43,7 @@ public class ErrorHistoryService {
                     StandardOpenOption.CREATE,
                     StandardOpenOption.APPEND);
 
-            System.out.println(ConsoleColors.CYAN + "📁 Error tersimpan di: " + logFile + ConsoleColors.RESET);
+            System.out.println("\n" + ConsoleColors.CYAN + "📁 Error tersimpan di: " + logFile + ConsoleColors.RESET);
         } catch (IOException e) {
             System.err.println("❌ Gagal menyimpan history: " + e.getMessage());
         }

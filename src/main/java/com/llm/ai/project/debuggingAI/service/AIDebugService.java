@@ -82,7 +82,7 @@ public class AIDebugService {
 
         // TODO: ==================== 3. CALL AI  ====================
 
-        System.out.println(ConsoleColors.CYAN + "🤖 Provider AI: " + provider.toUpperCase() + ConsoleColors.RESET);
+        System.out.println("\n" + ConsoleColors.CYAN + "🤖 Provider AI: " + provider.toUpperCase() + ConsoleColors.RESET);
 
         int attemptCount = sessionEnabled ? debugSession.getAttemptCount(errorContext) + 1 : 1;
         System.out.println(ConsoleColors.CYAN + "🔄 Attempt #" + attemptCount + ConsoleColors.RESET);

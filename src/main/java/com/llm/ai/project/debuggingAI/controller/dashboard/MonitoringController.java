@@ -21,7 +21,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("api/dashboard")
+@RequestMapping("/api/dashboard")
 @CrossOrigin(origins = "*")
 public class MonitoringController {
 
@@ -50,7 +50,7 @@ public class MonitoringController {
     public Map<String, Object> getStats() {
 //        Map<String, Object> stats = new HashMap<>();
 //        stats.put("totalToday", 47);
-//        stats.put("fixedToday", 38);
+//        stats.put("solutionToday", 38);
 //        stats.put("successRate", 81);
 //        stats.put("avgResponseTime", "2.3s");
 //
@@ -66,7 +66,7 @@ public class MonitoringController {
             if (!Files.exists(logFile)) {
                 System.out.println("   ⚠️ File not found");
                 stats.put("totalToday", 0);
-                stats.put("fixedToday", 0);
+                stats.put("solutionToday", 0);
                 stats.put("successRate", 0);
                 stats.put("avgResponseTime", "0s");
                 return stats;
@@ -90,7 +90,7 @@ public class MonitoringController {
             int successRate = totalErrors > 0 ? (fixedErrors * 100) / totalErrors : 0;
 
             stats.put("totalToday", totalErrors);
-            stats.put("fixedToday", fixedErrors);
+            stats.put("solutionToday", fixedErrors);
             stats.put("successRate", successRate);
             stats.put("avgResponseTime", "1.2s");
 
@@ -99,7 +99,7 @@ public class MonitoringController {
         } catch (IOException e) {
             System.err.println("❌ Failed to read stats: " + e.getMessage());
             stats.put("totalToday", 0);
-            stats.put("fixedToday", 0);
+            stats.put("solutionToday", 0);
             stats.put("successRate", 0);
             stats.put("avgResponseTime", "0s");
         }

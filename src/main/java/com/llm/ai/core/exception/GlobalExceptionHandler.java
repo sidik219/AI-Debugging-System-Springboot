@@ -1,5 +1,6 @@
 package com.llm.ai.core.exception;
 
+import com.llm.ai.core.aspect.PerformanceAnalyzer;
 import com.llm.ai.project.debuggingAI.controller.dashboard.MonitoringController;
 import com.llm.ai.project.debuggingAI.model.AIDebugResponse;
 import com.llm.ai.project.debuggingAI.model.ErrorContext;
@@ -47,13 +48,22 @@ public class GlobalExceptionHandler {
     @Autowired
     private MonitoringController monitoringController;
 
+    @Autowired
+    private PerformanceAnalyzer performanceAnalyzer;
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Object> handleAllExceptions(Exception ex, WebRequest request) {
+        long startTime = System.currentTimeMillis();
+        long memoryBefore = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+
         // Extract error context
         ErrorContext context = errorExtractor.extractErrorContext(ex);
 
         // Get AI analysis
         AIDebugResponse aiResponse = aiDebugService.analyzeError(context);
+
+        // Record performance
+        printRecordPerformance(context, startTime, memoryBefore, ex);
 
         // Print debug info
         if ("production".equals(mode)) {
@@ -167,5 +177,19 @@ public class GlobalExceptionHandler {
                 break;
             }
         }
+    }
+
+    private void printRecordPerformance(ErrorContext context, long startTime, long memoryBefore, Throwable ex) {
+        long duration = System.currentTimeMillis() - startTime;
+        long memoryUsed = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) - memoryBefore;
+
+        String key = context.getMethodName() + ":" + ex.getClass().getSimpleName();
+        performanceAnalyzer.recordError(key, duration, memoryUsed, ex);
+
+        System.out.println("\n📊 PERFORMANCE IMPACT:");
+        System.out.println("   Method: " + context.getMethodName() + "()");
+        System.out.println("   Response Time: " + duration + " ms");
+        System.out.println("   Memory Used: " + (memoryUsed / 1024) + " KB");
+        System.out.println("   Error: " + ex.getClass().getSimpleName());
     }
 }
