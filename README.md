@@ -47,6 +47,7 @@
 # <img src="https://github.com/sidik219/AI-Debugging-System-Springboot/blob/main/assets/arsitektur%20project.png" width="800" />
 
 ```bash
+AI LEARNING KONSEP
 FLOW ERROR (AI LEARNING -> MEMORY SESSION -> ERROR HISTORY)
     │
     ▼
