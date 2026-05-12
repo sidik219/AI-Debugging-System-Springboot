@@ -1,4 +1,4 @@
-# 🤖 AI Debugging System (Project Iseng :v)
+# 🤖 AI Debugging System (Project Iseng)
 
 [![Java](https://img.shields.io/badge/Java-17-orange.svg)](https://www.oracle.com/java/)
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.4.4-brightgreen.svg)](https://spring.io/projects/spring-boot)
@@ -38,8 +38,8 @@
 |-------|-----------|--------|---------|
 | **Web Dashboard monitoring** | Visual monitoring error secara real-time melalui browser | ✅ | Sudah di test aman |
 | **IntelliJ IDEA Plugin** | AI Debug Assistant langsung di dalam IDE untuk analisis error cepat | ✅ | Sudah di test aman |
-| **Learning System** | AI belajar dari fix yang berhasil | ⏳ | Development |
-| **Performance Impact Analysis** | Menganalisis dampak performa dari setiap error (response time, memory, CPU) | ⏳ | Development |
+| **Learning System** | AI belajar dari fix yang berhasil | ✅ | Sudah di test aman |
+| **Performance Impact Analysis** | Menganalisis dampak performa dari setiap error (response time, memory, CPU) | ✅ | Sudah di test aman |
 
 ---
 
