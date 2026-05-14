@@ -457,12 +457,14 @@ public class NotificationService {
                         "💻 **Device:** `%s`\n" +
                         "📋 **Method:** `%s`\n" +
                         "📝 **Deskripsi:** %s\n" +
+                        "📊 **Level:** `%s`\n" +
                         "🚨 **Status:** `%s`\n" +
                         "🕐 **Waktu:** %s",
                 escapeMarkdown(report.getDeveloperName()),
                 escapeMarkdown(report.getDeviceName()),
                 escapeMarkdown(report.getMethodName()),
                 escapeMarkdown(report.getDescription() != null ? report.getDescription() : "-"),
+                getLevelEmoji(report.getLevel()),
                 escapeMarkdown(report.getStatus()),
                 LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
         );
@@ -494,6 +496,15 @@ public class NotificationService {
         return text.replace("_", "\\_")
                 .replace("*", "\\*")
                 .replace("`", "\\`");
+    }
+
+    private String getLevelEmoji(String level) {
+        return switch (level) {
+            case "MUDAH" -> "🟢 Mudah";
+            case "NORMAL" -> "🟡 Normal";
+            case "SUSAH" -> "🔴 Susah";
+            default -> "❓ Tidak Diketahui";
+        };
     }
 
     // TODO: ==================== PLAIN MESSAGE ====================

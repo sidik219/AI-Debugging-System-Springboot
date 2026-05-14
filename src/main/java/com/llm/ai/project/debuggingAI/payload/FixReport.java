@@ -15,4 +15,5 @@ public class FixReport {
     private String methodName;
     private String description;
     private String status;
+    private String level;
 }

@@ -221,12 +221,13 @@ public class DebugSession {
         record.put("deviceName", report.getDeviceName());
         record.put("methodName", report.getMethodName());
         record.put("description", report.getDescription());
+        record.put("level", report.getLevel());
         record.put("status", report.getStatus());
         record.put("timestamp", LocalDateTime.now().toString());
 
         fixReports.add(record);
 
-        System.out.println(ConsoleColors.GREEN + "📝 Fix report recorded: " + report.getMethodName() + ConsoleColors.RESET);
+        System.out.println(ConsoleColors.GREEN + "📝 Fix report logged: " + report.getMethodName() + " [" + report.getLevel() + "]" + ConsoleColors.RESET);
     }
 
     public List<Map<String, Object>> getFixReport() {
