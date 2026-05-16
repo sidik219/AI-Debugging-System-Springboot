@@ -1,13 +1,8 @@
 package com.llm.ai.project.debuggingAI.controller.dashboard;
 
-import com.llm.ai.core.component.DebugSession;
 import com.llm.ai.project.debuggingAI.model.ErrorContext;
-import com.llm.ai.project.debuggingAI.payload.FixReport;
 import com.llm.ai.project.debuggingAI.service.ErrorHistoryService;
-import com.llm.ai.project.debuggingAI.service.NotificationService;
-import com.llm.ai.project.debuggingAI.util.SystemInfo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,7 +17,6 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/dashboard")
-@CrossOrigin(origins = "*")
 public class MonitoringController {
 
     @Autowired
