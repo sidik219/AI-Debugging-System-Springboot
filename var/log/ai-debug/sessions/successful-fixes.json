@@ -1,0 +1,3 @@
+{
+  "java.lang.NullPointerException:com.llm.ai.project.debuggingAI.controller.AIController:testError:38" : "return nullString != null ? nullString.toUpperCase() : \"\";"
+}
