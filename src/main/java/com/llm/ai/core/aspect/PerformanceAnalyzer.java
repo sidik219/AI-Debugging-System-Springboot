@@ -106,6 +106,8 @@ public class PerformanceAnalyzer {
         }
 
         public int getOccurrences() { return occurrences; }
+        public long getTotalDuration() { return totalDuration; }
+        public long getTotalMemory() { return totalMemory; }
         public long getAvgDuration() { return occurrences > 0 ? totalDuration / occurrences : 0;}
         public long getMaxDuration() { return maxDuration; }
         public long getAvgMemory() { return occurrences> 0 ? totalMemory / occurrences : 0;}

@@ -1,7 +1,9 @@
 package com.llm.ai.project.debuggingAI.controller.dashboard;
 
+import com.llm.ai.core.aspect.PerformanceAnalyzer;
 import com.llm.ai.project.debuggingAI.model.ErrorContext;
 import com.llm.ai.project.debuggingAI.service.ErrorHistoryService;
+import com.llm.ai.project.debuggingAI.service.ReportingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +26,12 @@ public class MonitoringController {
 
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
+
+    @Autowired
+    private PerformanceAnalyzer performanceAnalyzer;
+
+    @Autowired
+    private ReportingService reportingService;
 
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
@@ -68,7 +76,7 @@ public class MonitoringController {
 
             String content = Files.readString(logFile);
 
-            // Hitung jumlah error (setiap "========================================")
+            // Hitung jumlah error
             int totalErrors = countOccurrences(content, "========================================") / 2;
 
             // Hitung fixed (KEYAKINAN: HIGH atau SOLUSI ada)
@@ -83,10 +91,33 @@ public class MonitoringController {
 
             int successRate = totalErrors > 0 ? (fixedErrors * 100) / totalErrors : 0;
 
+            // Menghitung response time performance ai
+            Map<String, PerformanceAnalyzer.ErrorMetric> metrics = performanceAnalyzer.getErrorMetrics();
+
+            if (!metrics.isEmpty()) {
+                long totalDuration = metrics.values()
+                        .stream()
+                        .mapToLong(PerformanceAnalyzer.ErrorMetric::getTotalDuration)
+                        .sum();
+                int totalOccurrences = metrics.values()
+                        .stream()
+                        .mapToInt(PerformanceAnalyzer.ErrorMetric::getOccurrences)
+                        .sum();
+
+                long avgDuration = totalOccurrences > 0 ? totalDuration / totalOccurrences : 0;
+
+                stats.put("avgResponseTime", avgDuration + "ms");
+            } else {
+                stats.put("avgResponseTime", "0 ms");
+            }
+
+            // Menampilkan error yang belum selesai
+            long activeErrors = reportingService.findByFilter(null, "BELUM SELESAI").size();
+
             stats.put("totalToday", totalErrors);
             stats.put("solutionToday", fixedErrors);
             stats.put("successRate", successRate);
-            stats.put("avgResponseTime", "1.2s");
+            stats.put("activeErrors", activeErrors);
 
             System.out.println("   ✅ Total: " + totalErrors + ", Fixed: " + fixedErrors);
 
@@ -95,7 +126,8 @@ public class MonitoringController {
             stats.put("totalToday", 0);
             stats.put("solutionToday", 0);
             stats.put("successRate", 0);
-            stats.put("avgResponseTime", "0s");
+            stats.put("avgResponseTime", "0 ms");
+            stats.put("activeErrors", 0);
         }
 
         return stats;
