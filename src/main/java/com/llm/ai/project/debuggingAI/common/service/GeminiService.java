@@ -1,6 +1,6 @@
 package com.llm.ai.project.debuggingAI.common.service;
 
-import com.llm.ai.project.debuggingAI.util.ConsoleColors;
+import com.llm.ai.project.debuggingAI.common.util.ConsoleColors;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;

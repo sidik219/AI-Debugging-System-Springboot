@@ -1,4 +1,4 @@
-package com.llm.ai.project.debuggingAI.util;
+package com.llm.ai.project.debuggingAI.common.util;
 
 public class ConsoleColors {
     public static final String RESET = "\033[0m";

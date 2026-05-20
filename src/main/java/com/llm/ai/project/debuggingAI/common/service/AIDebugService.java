@@ -5,7 +5,7 @@ import com.llm.ai.core.component.DebugSession;
 import com.llm.ai.project.debuggingAI.admin.service.NotificationService;
 import com.llm.ai.project.debuggingAI.common.model.AIDebugResponse;
 import com.llm.ai.project.debuggingAI.common.model.ErrorContext;
-import com.llm.ai.project.debuggingAI.util.ConsoleColors;
+import com.llm.ai.project.debuggingAI.common.util.ConsoleColors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;

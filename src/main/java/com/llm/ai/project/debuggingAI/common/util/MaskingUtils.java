@@ -1,4 +1,4 @@
-package com.llm.ai.project.debuggingAI.util;
+package com.llm.ai.project.debuggingAI.common.util;
 
 public class MaskingUtils {
 

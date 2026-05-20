@@ -4,7 +4,7 @@ import com.llm.ai.core.component.DebugSession;
 import com.llm.ai.project.debuggingAI.dashboard.dto.payload.FixReport;
 import com.llm.ai.project.debuggingAI.admin.service.NotificationService;
 import com.llm.ai.project.debuggingAI.dashboard.service.ReportingService;
-import com.llm.ai.project.debuggingAI.util.SystemInfo;
+import com.llm.ai.project.debuggingAI.common.util.SystemInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

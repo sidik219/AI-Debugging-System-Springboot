@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.llm.ai.project.debuggingAI.common.model.AIDebugResponse;
 import com.llm.ai.project.debuggingAI.common.model.ErrorContext;
 import com.llm.ai.project.debuggingAI.dashboard.dto.payload.FixReport;
-import com.llm.ai.project.debuggingAI.util.ConsoleColors;
+import com.llm.ai.project.debuggingAI.common.util.ConsoleColors;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import org.springframework.beans.factory.annotation.Value;

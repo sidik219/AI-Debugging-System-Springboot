@@ -1,7 +1,7 @@
 package com.llm.ai.project.debuggingAI.common.service;
 
 import com.llm.ai.project.debuggingAI.common.model.AIDebugResponse;
-import com.llm.ai.project.debuggingAI.util.ConsoleColors;
+import com.llm.ai.project.debuggingAI.common.util.ConsoleColors;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
