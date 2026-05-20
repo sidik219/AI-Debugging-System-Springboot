@@ -1,6 +1,6 @@
 package com.llm.ai.core.component;
 
-import com.llm.ai.project.debuggingAI.service.NotificationService;
+import com.llm.ai.project.debuggingAI.admin.service.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.EnableScheduling;

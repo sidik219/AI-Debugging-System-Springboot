@@ -1,5 +1,6 @@
 package com.llm.ai.project.debuggingAI.controller.ecosystem;
 
+import com.llm.ai.project.debuggingAI.ecosystem.controller.EcosystemTestController;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.springframework.beans.factory.annotation.Autowired;

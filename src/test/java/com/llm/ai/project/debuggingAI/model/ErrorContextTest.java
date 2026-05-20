@@ -1,5 +1,6 @@
 package com.llm.ai.project.debuggingAI.model;
 
+import com.llm.ai.project.debuggingAI.common.model.ErrorContext;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import static org.junit.jupiter.api.Assertions.*;

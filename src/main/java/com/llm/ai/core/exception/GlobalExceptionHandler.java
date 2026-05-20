@@ -1,10 +1,14 @@
 package com.llm.ai.core.exception;
 
 import com.llm.ai.core.aspect.PerformanceAnalyzer;
-import com.llm.ai.project.debuggingAI.controller.dashboard.MonitoringController;
-import com.llm.ai.project.debuggingAI.model.AIDebugResponse;
-import com.llm.ai.project.debuggingAI.model.ErrorContext;
-import com.llm.ai.project.debuggingAI.service.*;
+import com.llm.ai.project.debuggingAI.admin.service.NotificationService;
+import com.llm.ai.project.debuggingAI.common.service.AIDebugService;
+import com.llm.ai.project.debuggingAI.common.service.ClipboardService;
+import com.llm.ai.project.debuggingAI.common.service.ErrorExtractorService;
+import com.llm.ai.project.debuggingAI.common.service.ErrorHistoryService;
+import com.llm.ai.project.debuggingAI.dashboard.controller.MonitoringController;
+import com.llm.ai.project.debuggingAI.common.model.AIDebugResponse;
+import com.llm.ai.project.debuggingAI.common.model.ErrorContext;
 import com.llm.ai.project.debuggingAI.util.ConsoleColors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

@@ -2,9 +2,9 @@ package com.llm.ai.core.component;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.llm.ai.project.debuggingAI.model.AIDebugResponse;
-import com.llm.ai.project.debuggingAI.model.ErrorContext;
-import com.llm.ai.project.debuggingAI.payload.FixReport;
+import com.llm.ai.project.debuggingAI.common.model.AIDebugResponse;
+import com.llm.ai.project.debuggingAI.common.model.ErrorContext;
+import com.llm.ai.project.debuggingAI.dashboard.dto.payload.FixReport;
 import com.llm.ai.project.debuggingAI.util.ConsoleColors;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
@@ -22,7 +22,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 @Component

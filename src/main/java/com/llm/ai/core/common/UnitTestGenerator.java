@@ -1,7 +1,7 @@
 package com.llm.ai.core.common;
 
-import com.llm.ai.project.debuggingAI.model.ErrorContext;
-import com.llm.ai.project.debuggingAI.service.GroqService;
+import com.llm.ai.project.debuggingAI.common.model.ErrorContext;
+import com.llm.ai.project.debuggingAI.common.service.GroqService;
 import com.llm.ai.project.debuggingAI.util.ConsoleColors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
