@@ -60,10 +60,15 @@ public class MonitoringController {
 
         Map<String, Object> stats = new HashMap<>();
 
-        try {
-            Path logFile = getTodayLogFile();
 
+
+        try {
+            // Menampilkan log error history
+            Path logFile = getTodayLogFile();
             System.out.println("📊 Reading stats from: " + logFile.toAbsolutePath());
+
+            // Menampilkan error yang belum selesai
+            long activeErrors = reportingService.findByFilter(null, "BELUM SELESAI").size();
 
             if (!Files.exists(logFile)) {
                 System.out.println("   ⚠️ File not found");
@@ -71,6 +76,7 @@ public class MonitoringController {
                 stats.put("solutionToday", 0);
                 stats.put("successRate", 0);
                 stats.put("avgResponseTime", "0s");
+                stats.put("activeErrors", activeErrors);
                 return stats;
             }
 
@@ -111,9 +117,6 @@ public class MonitoringController {
                 stats.put("avgResponseTime", "0 ms");
             }
 
-            // Menampilkan error yang belum selesai
-            long activeErrors = reportingService.findByFilter(null, "BELUM SELESAI").size();
-
             stats.put("totalToday", totalErrors);
             stats.put("solutionToday", fixedErrors);
             stats.put("successRate", successRate);
@@ -127,7 +130,7 @@ public class MonitoringController {
             stats.put("solutionToday", 0);
             stats.put("successRate", 0);
             stats.put("avgResponseTime", "0 ms");
-            stats.put("activeErrors", 0);
+            stats.put("activeErrors", "0");
         }
 
         return stats;
